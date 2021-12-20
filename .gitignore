@@ -1,0 +1,38 @@
+pyno/models
+models/*.pth
+
+*.yaml
+*.yml
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore latex generated stuff
+publications/**/*.aux
+publications/**/*.log
+
+logs/
+
+*.tar
+*.pth
+*.spec
+
+data/*.csv
+data/*.jpg
+data/*.png
+*.csv
+
+environment.yml
+
+build/
+
+# Ignore jupyter notebook checkpoints
+notebooks/**/.ipynb_checkpoints/
+
+# Ignore env
+env/
+
+tmp/
+bin/*.sh

@@ -1,0 +1,36 @@
+DIR=/home/ralampay/workspace/pyunet/
+
+cd $DIR
+
+source env/bin/activate
+
+# Parameters
+DEVICE=cuda
+GPU_INDEX=0
+IMG_WIDTH=200
+IMG_HEIGHT=200
+INPUT_IMG_DIR=/home/ralampay/Pictures/InteractiveSegmentation/training/original/
+MASKED_IMG_DIR=/home/ralampay/Pictures/InteractiveSegmentation/training/masks/
+MODEL_FILE=/home/ralampay/workspace/pyunet/models/interactive-segmentation.pth
+BATCH_SIZE=5
+EPOCHS=100
+LEARNING_RATE=0.0001
+FEATURES="64 128 256 512"
+IN_CHANNELS=3
+OUT_CHANNELS=3
+
+python -m pyunet \
+  --mode train \
+  --device $DEVICE \
+  --gpu-index $GPU_INDEX \
+  --img-width $IMG_WIDTH \
+  --img-height $IMG_HEIGHT \
+  --input-img-dir $INPUT_IMG_DIR \
+  --input-mask-dir $MASKED_IMG_DIR \
+  --model-file $MODEL_FILE \
+  --epochs $EPOCHS \
+  --batch-size $BATCH_SIZE \
+  --learning-rate $LEARNING_RATE \
+  --features $FEATURES \
+  --in-channels $IN_CHANNELS \
+  --out-channels $OUT_CHANNELS
