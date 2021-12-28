@@ -95,6 +95,7 @@ class TrainModel:
 
             # update tqdm
             loop.set_postfix(loss=loss.item())
+        
 
 class CustomDataset(Dataset):
     def __init__(self, image_dir, mask_dir, img_width, img_height, transform=None):

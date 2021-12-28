@@ -1,0 +1,9 @@
+DIR=$1/*.png
+
+for FILE in $DIR
+do
+  NEW_FILE="${FILE/\.png/_mask\.png}"
+  echo "Renaming $FILE to $NEW_FILE..."
+  mv $FILE $NEW_FILE
+done
+

@@ -1,0 +1,18 @@
+DIR=/home/ralampay/workspace/pyunet/
+
+cd $DIR
+
+source env/bin/activate
+
+# Parameters
+DEVICE=cuda
+GPU_INDEX=0
+INPUT_IMG=/home/ralampay/Pictures/satellite-images/test/17557_sat.jpg
+MODEL_FILE=/home/ralampay/workspace/pyunet/models/satellite-images.pth
+
+python -m pyunet \
+  --mode forward \
+  --model-file $MODEL_FILE \
+  --input-img $INPUT_IMG \
+  --device $DEVICE \
+  --gpu-index $GPU_INDEX 
