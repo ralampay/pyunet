@@ -31,7 +31,7 @@ def main():
     parser.add_argument("--batch-size", help="Batch size", type=int, default=1)
     parser.add_argument("--input-img", help="Input image", type=str, required=False)
     parser.add_argument("--in-channels", help="In Channels", type=int, default=3)
-    parser.add_argument("--out-channels", help="Out Channels", type=int, default=3)
+    parser.add_argument("--out-channels", help="Out Channels", type=int, default=2)
     parser.add_argument("--features", help="Features", type=int, nargs='+', default=[64, 128, 256, 512])
     parser.add_argument("--video", help="Video index", type=str, default="0")
 

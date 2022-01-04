@@ -12,8 +12,12 @@ class UNet(nn.Module):
         self, in_channels=3, out_channels=1, features=[64, 128, 256, 512]
     ):
         super(UNet, self).__init__()
-        self.downs  = nn.ModuleList()
+
+        self.in_channels    = in_channels
+        self.out_channels   = out_channels
+
         self.ups    = nn.ModuleList()
+        self.downs  = nn.ModuleList()
         self.pool   = nn.MaxPool2d(kernel_size=2, stride=2)
 
         # Down part of UNET
@@ -57,4 +61,4 @@ class UNet(nn.Module):
             concat_skip = torch.cat((skip_connection, x), dim=1)
             x = self.ups[idx + 1](concat_skip)
 
-        return torch.sigmoid(self.final_conv(x))
+        return self.final_conv(x)
