@@ -25,5 +25,7 @@ def main():
         new_filename = "{}{}.png".format(img_dir, new_id)
         print("Renaming {} to {}".format(file, new_filename))
 
+        os.rename(file, new_filename)
+
 if __name__ == '__main__':
     main()
