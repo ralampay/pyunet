@@ -3,6 +3,7 @@ import os
 import torch
 import cv2
 from matplotlib import pyplot as plt
+import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
@@ -49,14 +50,16 @@ class Forward:
         rows, cols, _ = img.shape
         original_dim = (cols, rows)
 
-        image = (cv2.resize(img, dim) / 255).transpose((2, 0, 1))
-        tensor_image = torch.Tensor(image)
+        input_image = cv2.resize(img, dim) / 255
+        input_image = input_image.transpose((2, 0, 1))
 
-        x = torch.tensor([tensor_image.numpy()]).to(self.device)
+        x = torch.Tensor([input_image]).to(self.device)
 
-        result = cv2.resize(model.forward(x).detach().cpu().numpy()[0].transpose(1, 2, 0), original_dim)
+        result = model.forward(x)
+        result = torch.argmax(result, 1).detach().cpu().numpy().astype(np.float32)
+        result = result.transpose((1, 2, 0)) / state['out_channels']
 
-        cv2.imshow("result", result)
+        cv2.imshow("result", cv2.resize(result, original_dim))
         cv2.imshow("Original", img)
         cv2.waitKey(0) 
         cv2.destroyAllWindows() 

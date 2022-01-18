@@ -128,28 +128,39 @@ class CustomDataset(Dataset):
         return torch.Tensor(original_img), torch.Tensor(masked_img)
 
     def preprocess_mask(self, image):
-        bin_width = np.round(256 / self.n_classes)
-        labels = []
-
-        for i in range(self.n_classes):
-            if i == 0:
-                min_val = 0
-            else:
-                min_val = bin_width * i
-
-            max_val = min_val + bin_width
-
-            labels.append([float(i), min_val, max_val])
-
         h = image.shape[0]
         w = image.shape[1]
 
-        for y in range(0, h):
-            for x in range(0, w):
-                val = image[y, x]
+        if self.n_classes > 2:
+            bin_width = np.round(256 / self.n_classes)
+            labels = []
 
-                for label in labels:
-                    if val >= label[1] and val < label[2]:
-                        image[y, x] = label[0]
+            for i in range(self.n_classes):
+                if i == 0:
+                    min_val = 0
+                else:
+                    min_val = bin_width * i
+
+                max_val = min_val + bin_width
+
+                labels.append([float(i), min_val, max_val])
+
+            for y in range(0, h):
+                for x in range(0, w):
+                    val = image[y, x]
+
+                    for label in labels:
+                        if val >= label[1] and val < label[2]:
+                            image[y, x] = label[0]
+
+        elif self.n_classes == 2:
+            for y in range(0, h):
+                for x in range(0, w):
+                    val = image[y, x]
+
+                    if val > 0:
+                        image[y, x] = 1
+                    else:
+                        image[y, x] = 0
 
         return image
