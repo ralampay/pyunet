@@ -5,7 +5,7 @@ import torch
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-from modules.train_model import TrainModel
+from modules.train import Train
 from modules.forward import Forward
 from modules.monitor import Monitor
 
@@ -71,7 +71,7 @@ def main():
             'features':         features
         }
 
-        cmd = TrainModel(params=params)
+        cmd = Train(params=params)
         cmd.execute()
     elif mode =="forward":
         params = {

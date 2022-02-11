@@ -12,7 +12,7 @@ import torch.optim as optim
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 
-class TrainModel:
+class Train:
     def __init__(self, params={}):
         self.params = params
 
@@ -118,49 +118,9 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, index):
         img_path    = os.path.join(self.image_dir, self.images[index])
-        mask_path   = os.path.join(self.mask_dir, self.images[index].replace(".png", "_mask.png"))
+        mask_path   = os.path.join(self.mask_dir, self.images[index].replace(".png", ".tiff"))
 
         original_img    = (cv2.resize(cv2.imread(img_path), self.dim) / 255).transpose((2, 0, 1))
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))
 
-        masked_img = self.preprocess_mask(masked_img)
-
         return torch.Tensor(original_img), torch.Tensor(masked_img)
-
-    def preprocess_mask(self, image):
-        h = image.shape[0]
-        w = image.shape[1]
-
-        if self.n_classes > 2:
-            bin_width = np.round(256 / self.n_classes)
-            labels = []
-
-            for i in range(self.n_classes):
-                if i == 0:
-                    min_val = 0
-                else:
-                    min_val = bin_width * i
-
-                max_val = min_val + bin_width
-
-                labels.append([float(i), min_val, max_val])
-
-            for y in range(0, h):
-                for x in range(0, w):
-                    val = image[y, x]
-
-                    for label in labels:
-                        if val >= label[1] and val < label[2]:
-                            image[y, x] = label[0]
-
-        elif self.n_classes == 2:
-            for y in range(0, h):
-                for x in range(0, w):
-                    val = image[y, x]
-
-                    if val > 0:
-                        image[y, x] = 1
-                    else:
-                        image[y, x] = 0
-
-        return image
