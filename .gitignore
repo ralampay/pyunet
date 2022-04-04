@@ -36,3 +36,5 @@ env/
 
 tmp/
 bin/*.sh
+
+*.tiff

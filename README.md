@@ -25,3 +25,13 @@ For `venv` users:
 ```
 source env/bin/activate
 ```
+
+## Modules
+
+### Generate Tiff
+
+Generates a set of tiff images from masked values. Need to supply the unique grayscale values first since the program will convert the original masked colored image (presumed to be png) to grayscale then match it with the `--unique_values` flag.
+
+```
+python -m pyunet --mode generate-tiff --unique-values 62 113 137 155 176 194 --input-img-dir ./masks --output-img-dir ./output
+```

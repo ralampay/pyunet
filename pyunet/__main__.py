@@ -8,10 +8,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 from modules.train import Train
 from modules.forward import Forward
 from modules.monitor import Monitor
+from modules.generate_tiff import GenerateTiff
 
 mode_choices = [
     "train",
     "forward",
+    "generate-tiff",
     "monitor"
 ]
 
@@ -24,6 +26,7 @@ def main():
     parser.add_argument("--device", help="Device used for training", choices=["cpu", "cuda"], type=str, default="cpu")
     parser.add_argument("--gpu-index", help="GPU index", type=int, default=0)
     parser.add_argument("--input-img-dir", help="Input image directory", type=str)
+    parser.add_argument("--output-img-dir", help="Output image directory", type=str)
     parser.add_argument("--input-mask-dir", help="Input mask directory", type=str)
     parser.add_argument("--epochs", help="Epoch count", type=int, default=100)
     parser.add_argument("--learning-rate", help="Learning rate", type=float, default=0.001)
@@ -33,6 +36,7 @@ def main():
     parser.add_argument("--in-channels", help="In Channels", type=int, default=3)
     parser.add_argument("--out-channels", help="Out Channels", type=int, default=2)
     parser.add_argument("--features", help="Features", type=int, nargs='+', default=[64, 128, 256, 512])
+    parser.add_argument("--unique-values", help="Features", type=int, nargs='+', required=False)
     parser.add_argument("--video", help="Video index", type=str, default="0")
 
     args = parser.parse_args()
@@ -43,6 +47,7 @@ def main():
     device          = args.device
     gpu_index       = args.gpu_index
     input_img_dir   = args.input_img_dir
+    output_img_dir  = args.output_img_dir
     input_mask_dir  = args.input_mask_dir
     epochs          = args.epochs
     learning_rate   = args.learning_rate
@@ -52,7 +57,8 @@ def main():
     in_channels     = args.in_channels
     out_channels    = args.out_channels
     features        = args.features
-    video     = args.video
+    unique_values   = args.unique_values
+    video           = args.video
 
     if mode =="train":
         params = {
@@ -73,6 +79,7 @@ def main():
 
         cmd = Train(params=params)
         cmd.execute()
+
     elif mode =="forward":
         params = {
             'model_file':   model_file,
@@ -83,6 +90,7 @@ def main():
 
         cmd = Forward(params=params)
         cmd.execute()
+
     elif mode =="monitor":
         params = {
             'model_file':   model_file,
@@ -93,6 +101,17 @@ def main():
 
         cmd = Monitor(params=params)
         cmd.execute()
+
+    elif mode == "generate-tiff":
+        params = {
+            'input_img_dir':    input_img_dir,
+            'output_img_dir':   output_img_dir,
+            'unique_values':    unique_values
+        }
+
+        cmd = GenerateTiff(params=params)
+        cmd.execute()
+
     else:
         raise ValueError("Invalid mode {}".format(mode))
 
