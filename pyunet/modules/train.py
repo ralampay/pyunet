@@ -30,6 +30,9 @@ class Train:
         self.out_channels   = params.get('out_channels') or 3
         self.features       = params.get('features') or [64, 128, 256, 512]
 
+        # Expected input image file format
+        self.img_suffix = params.get('img_suffix') or 'jpg'
+
     def execute(self):
         print("Training model...")
 
@@ -52,7 +55,8 @@ class Train:
             mask_dir=self.input_mask_dir,
             img_width=self.img_width,
             img_height=self.img_height,
-            n_classes=self.out_channels
+            n_classes=self.out_channels,
+            img_suffix=self.img_suffix
         )
 
         train_loader = DataLoader(
@@ -64,7 +68,9 @@ class Train:
 
         for epoch in range(self.epochs):
             print("Epoch: {}".format(epoch))
-            self.train_fn(train_loader, model, optimizer, loss_fn, scaler)
+            ave_loss = self.train_fn(train_loader, model, optimizer, loss_fn, scaler)
+
+            print("Ave Loss: {}".format(ave_loss))
 
             # Save model after every epoch
             print("Saving model to {}...".format(self.model_file))
@@ -81,6 +87,9 @@ class Train:
 
     def train_fn(self, loader, model, optimizer, loss_fn, scaler):
         loop = tqdm(loader)
+
+        ave_loss = 0.0
+        count = 0
 
         for batch_idx, (data, targets) in enumerate(loop):
             data    = data.to(device=self.device)
@@ -99,10 +108,17 @@ class Train:
 
             # update tqdm
             loop.set_postfix(loss=loss.item())
+
+            ave_loss += loss.item()
+            count += 1
+
+        ave_loss = ave_loss / count
+
+        return ave_loss
         
 
 class CustomDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, img_width, img_height, n_classes):
+    def __init__(self, image_dir, mask_dir, img_width, img_height, n_classes, img_suffix):
         self.image_dir      = image_dir
         self.mask_dir       = mask_dir 
         self.img_width      = img_width
@@ -110,6 +126,7 @@ class CustomDataset(Dataset):
         self.images         = os.listdir(image_dir)
         self.images_masked  = os.listdir(mask_dir)
         self.n_classes      = n_classes
+        self.img_suffix     = img_suffix
 
         self.dim = (img_width, img_height)
 
@@ -118,7 +135,7 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, index):
         img_path    = os.path.join(self.image_dir, self.images[index])
-        mask_path   = os.path.join(self.mask_dir, self.images[index].replace(".png", ".tiff"))
+        mask_path   = os.path.join(self.mask_dir, self.images[index].replace(".{}".format(self.img_suffix), ".tiff"))
 
         original_img    = (cv2.resize(cv2.imread(img_path), self.dim) / 255).transpose((2, 0, 1))
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))

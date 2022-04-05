@@ -38,6 +38,7 @@ def main():
     parser.add_argument("--features", help="Features", type=int, nargs='+', default=[64, 128, 256, 512])
     parser.add_argument("--unique-values", help="Features", type=int, nargs='+', required=False)
     parser.add_argument("--video", help="Video index", type=str, default="0")
+    parser.add_argument("--img-suffix", help="Img Suffix", type=str, default="jpg")
 
     args = parser.parse_args()
 
@@ -59,6 +60,7 @@ def main():
     features        = args.features
     unique_values   = args.unique_values
     video           = args.video
+    img_suffix      = args.img_suffix
 
     if mode =="train":
         params = {
@@ -74,7 +76,8 @@ def main():
             'batch_size':       batch_size,
             'in_channels':      in_channels,
             'out_channels':     out_channels,
-            'features':         features
+            'features':         features,
+            'img_suffix':       img_suffix
         }
 
         cmd = Train(params=params)
