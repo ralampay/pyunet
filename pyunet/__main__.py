@@ -39,6 +39,7 @@ def main():
     parser.add_argument("--unique-values", help="Features", type=int, nargs='+', required=False)
     parser.add_argument("--video", help="Video index", type=str, default="0")
     parser.add_argument("--img-suffix", help="Img Suffix", type=str, default="jpg")
+    parser.add_argument("--cont", help="Continue training", type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -61,6 +62,7 @@ def main():
     unique_values   = args.unique_values
     video           = args.video
     img_suffix      = args.img_suffix
+    cont            = args.cont
 
     if mode =="train":
         params = {
@@ -77,7 +79,8 @@ def main():
             'in_channels':      in_channels,
             'out_channels':     out_channels,
             'features':         features,
-            'img_suffix':       img_suffix
+            'img_suffix':       img_suffix,
+            'cont':             cont
         }
 
         cmd = Train(params=params)

@@ -29,6 +29,7 @@ class Train:
         self.in_channels    = params.get('in_channels') or 3
         self.out_channels   = params.get('out_channels') or 3
         self.features       = params.get('features') or [64, 128, 256, 512]
+        self.cont           = params.get('cont') or False
 
         # Expected input image file format
         self.img_suffix = params.get('img_suffix') or 'tiff'
@@ -40,11 +41,14 @@ class Train:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        model   = UNet(
-                    in_channels=self.in_channels, 
-                    out_channels=self.out_channels,
-                    features=self.features
-                  ).to(self.device)
+        model = UNet(
+            in_channels=self.in_channels, 
+            out_channels=self.out_channels,
+            features=self.features
+        ).to(self.device)
+
+        if self.cont:
+            model = torch.load(self.model_file)
 
         loss_fn     = nn.CrossEntropyLoss()
         optimizer   = optim.Adam(model.parameters(), lr=self.learning_rate)
