@@ -49,6 +49,8 @@ class Train:
 
         if self.cont:
             model = torch.load(self.model_file)
+            model.load_state_dict(state['state_dict'])
+            model.optimizer = state['optimizer']
 
         loss_fn     = nn.CrossEntropyLoss()
         optimizer   = optim.Adam(model.parameters(), lr=self.learning_rate)
