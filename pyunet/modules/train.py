@@ -31,7 +31,7 @@ class Train:
         self.features       = params.get('features') or [64, 128, 256, 512]
 
         # Expected input image file format
-        self.img_suffix = params.get('img_suffix') or 'jpg'
+        self.img_suffix = params.get('img_suffix') or 'tiff'
 
     def execute(self):
         print("Training model...")
