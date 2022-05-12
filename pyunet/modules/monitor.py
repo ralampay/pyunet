@@ -65,7 +65,11 @@ class Monitor:
                 image = cv2.resize(frame, dim) / 255
                 image = image.transpose((2, 0, 1))
 
-                x = torch.Tensor([image]).to(self.device)
+                x = torch.Tensor(
+                    np.array([image])
+                ).to(
+                    self.device
+                )
 
                 result = model.forward(x)
                 result = torch.argmax(result, 1).detach().cpu().numpy().astype(np.float32)

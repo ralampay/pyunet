@@ -50,10 +50,10 @@ class Train:
         if self.cont:
             state = torch.load(self.model_file)
             model.load_state_dict(state['state_dict'])
-            model.optimizer = state['optimizer']
-            model.in_channels = self.in_channels
-            model.features = self.features
-            model.out_channels = state['out_channels']
+            model.optimizer     = state['optimizer']
+            model.in_channels   = self.in_channels
+            model.out_channels  = state['out_channels']
+            model.features      = self.features
 
         loss_fn     = nn.CrossEntropyLoss()
         optimizer   = optim.Adam(model.parameters(), lr=self.learning_rate)
