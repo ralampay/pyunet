@@ -31,11 +31,11 @@ class Train:
         self.features       = params.get('features') or [64, 128, 256, 512]
         self.cont           = params.get('cont') or False
 
-        # Expected input image file format
-        self.img_suffix = params.get('img_suffix') or 'tiff'
-
     def execute(self):
         print("Training model...")
+
+        print("input_img_dir: {}".format(self.input_img_dir))
+        print("input_mask_dir: {}".format(self.input_mask_dir))
 
         if self.device == 'cuda':
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
@@ -65,7 +65,6 @@ class Train:
             img_width=self.img_width,
             img_height=self.img_height,
             n_classes=self.out_channels,
-            img_suffix=self.img_suffix
         )
 
         train_loader = DataLoader(
@@ -127,7 +126,7 @@ class Train:
         
 
 class CustomDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, img_width, img_height, n_classes, img_suffix):
+    def __init__(self, image_dir, mask_dir, img_width, img_height, n_classes):
         self.image_dir      = image_dir
         self.mask_dir       = mask_dir 
         self.img_width      = img_width
@@ -135,7 +134,6 @@ class CustomDataset(Dataset):
         self.images         = os.listdir(image_dir)
         self.images_masked  = os.listdir(mask_dir)
         self.n_classes      = n_classes
-        self.img_suffix     = img_suffix
 
         self.dim = (img_width, img_height)
 
@@ -144,7 +142,7 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, index):
         img_path    = os.path.join(self.image_dir, self.images[index])
-        mask_path   = os.path.join(self.mask_dir, self.images[index].replace(".{}".format(self.img_suffix), ".tiff"))
+        mask_path   = os.path.join(self.mask_dir, self.images_masked[index])
 
         original_img    = (cv2.resize(cv2.imread(img_path), self.dim) / 255).transpose((2, 0, 1))
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))

@@ -1,4 +1,4 @@
-pyno/models
+pyunet/models
 models/*.pth
 
 *.yaml

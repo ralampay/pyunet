@@ -61,7 +61,6 @@ def main():
     features        = args.features
     unique_values   = args.unique_values
     video           = args.video
-    img_suffix      = args.img_suffix
     cont            = args.cont
 
     if mode =="train":
@@ -79,7 +78,6 @@ def main():
             'in_channels':      in_channels,
             'out_channels':     out_channels,
             'features':         features,
-            'img_suffix':       img_suffix,
             'cont':             cont
         }
 

@@ -53,7 +53,7 @@ class Forward:
         input_image = cv2.resize(img, dim) / 255
         input_image = input_image.transpose((2, 0, 1))
 
-        x = torch.Tensor([input_image]).to(self.device)
+        x = torch.Tensor(np.array([input_image])).to(self.device)
 
         result = model.forward(x)
         result = torch.argmax(result, 1).detach().cpu().numpy().astype(np.float32)
