@@ -131,8 +131,8 @@ class CustomDataset(Dataset):
         self.mask_dir       = mask_dir 
         self.img_width      = img_width
         self.img_height     = img_height
-        self.images         = os.listdir(image_dir)
-        self.images_masked  = os.listdir(mask_dir)
+        self.images         = sorted(os.listdir(image_dir))
+        self.images_masked  = sorted(os.listdir(mask_dir))
         self.n_classes      = n_classes
 
         self.dim = (img_width, img_height)

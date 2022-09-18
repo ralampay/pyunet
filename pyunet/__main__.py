@@ -9,12 +9,14 @@ from modules.train import Train
 from modules.forward import Forward
 from modules.monitor import Monitor
 from modules.generate_tiff import GenerateTiff
+from modules.sample_pair import SamplePair
 
 mode_choices = [
     "train",
     "forward",
     "generate-tiff",
-    "monitor"
+    "monitor",
+    "sample-pair"
 ]
 
 def main():
@@ -104,6 +106,17 @@ def main():
         }
 
         cmd = Monitor(params=params)
+        cmd.execute()
+
+    elif mode == "sample-pair":
+        params = {
+            'img_width':        img_width,
+            'img_height':       img_height,
+            'input_img_dir':    input_img_dir,
+            'input_mask_dir':   input_mask_dir
+        }
+        
+        cmd = SamplePair(params=params)
         cmd.execute()
 
     elif mode == "generate-tiff":
