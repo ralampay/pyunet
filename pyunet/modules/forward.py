@@ -35,12 +35,10 @@ class Forward:
 
         in_channels     = saved_params.get('in_channels') or 3
         out_channels    = saved_params.get('out_channels') or 3
-        features        = saved_params.get('features') or [64, 128, 256, 512]
 
         model   = UNet(
                     in_channels=in_channels,
-                    out_channels=out_channels,
-                    features=features
+                    out_channels=out_channels
                   ).to(self.device)
 
         model.load_state_dict(state['state_dict'])

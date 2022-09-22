@@ -37,11 +37,12 @@ def main():
     parser.add_argument("--input-img", help="Input image", type=str, required=False)
     parser.add_argument("--in-channels", help="In Channels", type=int, default=3)
     parser.add_argument("--out-channels", help="Out Channels", type=int, default=2)
-    parser.add_argument("--features", help="Features", type=int, nargs='+', default=[64, 128, 256, 512])
     parser.add_argument("--unique-values", help="Features", type=int, nargs='+', required=False)
     parser.add_argument("--video", help="Video index", type=str, default="0")
     parser.add_argument("--img-suffix", help="Img Suffix", type=str, default="jpg")
     parser.add_argument("--cont", help="Continue training", type=bool, default=False)
+    parser.add_argument("--is-normalized", help="Use instance normalization", type=bool, default=False)
+    parser.add_argument("--loss-type", help="Type of loss function", type=str, default='CE')
 
     args = parser.parse_args()
 
@@ -60,10 +61,11 @@ def main():
     input_img       = args.input_img
     in_channels     = args.in_channels
     out_channels    = args.out_channels
-    features        = args.features
     unique_values   = args.unique_values
     video           = args.video
     cont            = args.cont
+    is_normalized   = args.is_normalized
+    loss_type       = args.loss_type
 
     if mode =="train":
         params = {
@@ -79,8 +81,9 @@ def main():
             'batch_size':       batch_size,
             'in_channels':      in_channels,
             'out_channels':     out_channels,
-            'features':         features,
-            'cont':             cont
+            'cont':             cont,
+            'is_normalized':    is_normalized,
+            'loss_type':        loss_type
         }
 
         cmd = Train(params=params)

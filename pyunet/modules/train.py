@@ -6,11 +6,14 @@ import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
+import torch
 import torch.nn as nn
 import torch.optim as optim
+import torchvision.transforms.functional as TF
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
+from lib.loss_functions import dice_loss, tversky_loss
 
 class Train:
     def __init__(self, params={}):
@@ -28,11 +31,14 @@ class Train:
         self.batch_size     = params.get('batch_size')
         self.in_channels    = params.get('in_channels') or 3
         self.out_channels   = params.get('out_channels') or 3
-        self.features       = params.get('features') or [64, 128, 256, 512]
         self.cont           = params.get('cont') or False
+        self.is_normalized  = params.get('is_normalized')
+        self.loss_type      = params.get('loss_type') or 'CE'
 
     def execute(self):
         print("Training model...")
+        if self.is_normalized:
+            print("Using regularization...")
 
         print("input_img_dir: {}".format(self.input_img_dir))
         print("input_mask_dir: {}".format(self.input_mask_dir))
@@ -44,18 +50,32 @@ class Train:
         model = UNet(
             in_channels=self.in_channels, 
             out_channels=self.out_channels,
-            features=self.features
+            is_normalized=self.is_normalized
         ).to(self.device)
 
         if self.cont:
-            state = torch.load(self.model_file)
+            state = torch.load(
+                self.model_file, 
+                map_location=self.device
+            )
+
             model.load_state_dict(state['state_dict'])
             model.optimizer     = state['optimizer']
             model.in_channels   = self.in_channels
             model.out_channels  = state['out_channels']
-            model.features      = self.features
 
-        loss_fn     = nn.CrossEntropyLoss()
+        if self.loss_type == 'CE':
+            loss_fn = nn.CrossEntropyLoss()
+        elif self.loss_type == 'DL':
+            loss_fn = dice_loss
+        elif self.loss_type == 'TL':
+            loss_fn = tversky_loss
+        else:
+            loss_fn = nn.CrossEntropyLoss()
+
+        print("Loss Type: {}".format(self.loss_type))
+
+
         optimizer   = optim.Adam(model.parameters(), lr=self.learning_rate)
         scaler      = torch.cuda.amp.GradScaler()
 
@@ -63,8 +83,7 @@ class Train:
             image_dir=self.input_img_dir,
             mask_dir=self.input_mask_dir,
             img_width=self.img_width,
-            img_height=self.img_height,
-            n_classes=self.out_channels,
+            img_height=self.img_height
         )
 
         train_loader = DataLoader(
@@ -107,6 +126,7 @@ class Train:
             predictions = model.forward(data)
 
             loss = loss_fn(predictions, targets)
+            #loss = self.dice_loss(predictions, targets)
 
             # Backward
             optimizer.zero_grad()
@@ -123,17 +143,17 @@ class Train:
         ave_loss = ave_loss / count
 
         return ave_loss
+
         
 
 class CustomDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, img_width, img_height, n_classes):
+    def __init__(self, image_dir, mask_dir, img_width, img_height):
         self.image_dir      = image_dir
         self.mask_dir       = mask_dir 
         self.img_width      = img_width
         self.img_height     = img_height
         self.images         = sorted(os.listdir(image_dir))
         self.images_masked  = sorted(os.listdir(mask_dir))
-        self.n_classes      = n_classes
 
         self.dim = (img_width, img_height)
 
