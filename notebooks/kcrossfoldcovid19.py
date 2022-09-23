@@ -28,8 +28,8 @@ out_channels    = 4
 image_dir       = "./images/covid19ctscan/images"
 mask_dir        = "./images/covid19ctscan/masks"
 learning_rate   = 0.0001
-img_width       = 256
-img_height      = 256
+img_width       = 128
+img_height      = 128
 gpu_index       = 0
 batch_size      = 2
 dim             = (img_width, img_height)
@@ -48,7 +48,7 @@ experiments = [
 k = 10
 
 # Number of epochs per training session
-epochs = 1
+epochs = 100
 
 
 # In[2]:
@@ -132,7 +132,6 @@ def train_fn(loader, model, optimizer, loss_fn, scaler, device):
 from unicodedata import is_normalized
 
 
-scores = []
 
 image_paths = list(map(lambda o: os.path.join(image_dir, o), sorted(os.listdir(image_dir))))
 mask_paths  = list(map(lambda o: os.path.join(mask_dir, o), sorted(os.listdir(mask_dir))))
@@ -150,6 +149,7 @@ aggregated_scores = []
 
 for i in range(k):
     device = 'cuda'
+    scores = []
 
     validation_indices  = np.array(indices[index:index + len_partition])
     training_indices    = np.delete(indices, validation_indices)
