@@ -39,3 +39,15 @@ env/
 
 tmp/
 bin/*.sh
+
+# Ignore latex stuff
+*.aux
+*.bbl
+*.blg
+*.loc
+*.log
+*.out
+*.pdf
+*.soc
+*.toc
+_minted-main/
