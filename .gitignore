@@ -32,13 +32,17 @@ build/
 notebooks/**/.ipynb_checkpoints/
 notebooks/models/*.pth
 notebooks/*.json
-notebooks/*.[png|jpg]
+notebooks/*.[png|jpg|tiff]
+notebooks/**/*.[png|jpg|tiff]
 
 # Ignore env
 env/
 
 tmp/
+notebooks/tmp/
 bin/*.sh
+
+# Ignore 
 
 # Ignore latex stuff
 *.aux

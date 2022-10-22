@@ -33,7 +33,13 @@ class Train:
         self.out_channels   = params.get('out_channels') or 3
         self.cont           = params.get('cont') or False
         self.is_normalized  = params.get('is_normalized')
+        self.is_residual    = params.get('is_residual')
+        self.double_skip    = params.get('double_skip')
         self.loss_type      = params.get('loss_type') or 'CE'
+
+        self.model = None
+
+        self.losses = []
 
     def execute(self):
         print("Training model...")
@@ -47,11 +53,15 @@ class Train:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        model = UNet(
+        self.model = UNet(
             in_channels=self.in_channels, 
             out_channels=self.out_channels,
-            is_normalized=self.is_normalized
+            is_normalized=self.is_normalized,
+            is_residual=self.is_residual,
+            double_skip=self.double_skip
         ).to(self.device)
+
+        print(self.model)
 
         if self.cont:
             state = torch.load(
@@ -76,7 +86,7 @@ class Train:
         print("Loss Type: {}".format(self.loss_type))
 
 
-        optimizer   = optim.Adam(model.parameters(), lr=self.learning_rate)
+        optimizer   = optim.Adam(self.model.parameters(), lr=self.learning_rate)
         scaler      = torch.cuda.amp.GradScaler()
 
         train_ds = CustomDataset(
@@ -95,7 +105,9 @@ class Train:
 
         for epoch in range(self.epochs):
             print("Epoch: {}".format(epoch))
-            ave_loss = self.train_fn(train_loader, model, optimizer, loss_fn, scaler)
+            ave_loss = self.train_fn(train_loader, self.model, optimizer, loss_fn, scaler)
+
+            self.losses.append(ave_loss)
 
             print("Ave Loss: {}".format(ave_loss))
 
@@ -104,7 +116,7 @@ class Train:
 
             state = {
                 'params': self.params,
-                'state_dict': model.state_dict(),
+                'state_dict': self.model.state_dict(),
                 'optimizer': optimizer.state_dict(),
                 'out_channels': self.out_channels
             }
