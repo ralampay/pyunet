@@ -2,6 +2,12 @@ import cv2
 import numpy as np
 import torch
 
+def dice_score(pred, true, k=0):
+    intersection = np.sum(pred[true==k]) * 2.0
+    dice = intersection / (np.sum(pred) + np.sum(true))
+
+    return dice
+
 def get_image(file, dim):
     img = cv2.resize(
         cv2.imread(

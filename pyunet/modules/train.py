@@ -10,10 +10,17 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms.functional as TF
+import glob
+from sklearn.metrics import jaccard_score
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.loss_functions import dice_loss, tversky_loss
+from lib.utils import get_image, get_mask, get_predicted_img, dice_score
 
 class Train:
     def __init__(self, params={}):
@@ -37,9 +44,17 @@ class Train:
         self.double_skip    = params.get('double_skip')
         self.loss_type      = params.get('loss_type') or 'CE'
 
-        self.model = None
+        self.test_img_dir   = params.get('test_img_dir') or None
+        self.test_mask_dir  = params.get('test_mask_dir') or None
 
-        self.losses = []
+        self.accuracies     = []
+        self.f1s            = []
+        self.precisions     = []
+        self.recalls        = []
+        self.specificities  = []
+        self.losses         = []
+
+        self.model = None
 
     def execute(self):
         print("Training model...")
@@ -105,11 +120,36 @@ class Train:
 
         for epoch in range(self.epochs):
             print("Epoch: {}".format(epoch))
-            ave_loss = self.train_fn(train_loader, self.model, optimizer, loss_fn, scaler)
+
+            ave_loss, ave_accuracy, ave_f1, ave_precision, ave_recall, ave_specificity = self.train_fn(
+                train_loader, 
+                self.model, 
+                optimizer, 
+                loss_fn, 
+                scaler,
+                test_img_dir=self.test_img_dir,
+                test_mask_dir=self.test_mask_dir
+            )
 
             self.losses.append(ave_loss)
 
             print("Ave Loss: {}".format(ave_loss))
+
+            if self.test_img_dir is not None and self.test_mask_dir is not None:
+                self.accuracies.append(ave_accuracy)
+                print("Ave Accuracy: {}".format(ave_accuracy))
+
+                self.f1s.append(ave_f1)
+                print("Ave F1: {}".format(ave_f1))
+
+                self.precisions.append(ave_precision)
+                print("Ave Precision: {}".format(ave_precision))
+
+                self.recalls.append(ave_recall)
+                print("Ave Recall: {}".format(ave_recall))
+
+                self.specificities.append(ave_specificity)
+                print("Ave Specificity: {}".format(ave_specificity))
 
             # Save model after every epoch
             print("Saving model to {}...".format(self.model_file))
@@ -124,7 +164,7 @@ class Train:
             torch.save(state, self.model_file)
 
 
-    def train_fn(self, loader, model, optimizer, loss_fn, scaler):
+    def train_fn(self, loader, model, optimizer, loss_fn, scaler, test_img_dir=None, test_mask_dir=None):
         loop = tqdm(loader)
 
         ave_loss = 0.0
@@ -152,9 +192,60 @@ class Train:
             ave_loss += loss.item()
             count += 1
 
+        # Compute the accuracies if test_img_dir and test_mask_dir are present
+        ave_accuracy    = None
+        ave_f1          = None
+        ave_precision   = None
+        ave_recall      = None
+        ave_specificity = None
+
+        if test_img_dir is not None and test_mask_dir is not None:
+            test_images = sorted(glob.glob("{}/*".format(test_img_dir)))
+            test_masks  = sorted(glob.glob("{}/*".format(test_mask_dir)))
+
+            dim = (self.img_width, self.img_height)
+
+            num_images = len(test_images)
+
+            ave_accuracy    = 0.0
+            ave_f1          = 0.0
+            ave_precision   = 0.0
+            ave_recall      = 0.0
+            ave_specificity = 0.0
+
+            for i in range(num_images):
+                image_file  = test_images[i]
+                mask_file   = test_masks[i]
+
+                img  = get_image(image_file, dim)
+                mask = get_mask(mask_file, dim)
+
+                prediction = get_predicted_img(img, model, device=self.device)
+
+                mask_vectorized = mask.ravel().astype(int)
+                prediction_vectorized = prediction.ravel().astype(int)
+
+                accuracy    = accuracy_score(mask_vectorized, prediction_vectorized)
+                f1          = f1_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1)
+                precision   = precision_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1)
+                recall      = recall_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1) # sensitivity
+                specificity = recall_score(mask_vectorized, prediction_vectorized, labels=range(self.out_channels), average='macro', zero_division=1)
+
+                ave_accuracy += accuracy
+                ave_f1 += f1
+                ave_precision += precision
+                ave_recall += recall
+                ave_specificity += specificity
+
+            ave_accuracy    = ave_accuracy / num_images
+            ave_f1          = ave_f1 / num_images
+            ave_precision   = ave_precision / num_images
+            ave_recall      = ave_recall / num_images
+            ave_specificity = ave_specificity / num_images
+
         ave_loss = ave_loss / count
 
-        return ave_loss
+        return ave_loss, ave_accuracy, ave_f1, ave_precision, ave_recall, ave_specificity
 
         
 
