@@ -84,10 +84,12 @@ class Train:
                 map_location=self.device
             )
 
-            model.load_state_dict(state['state_dict'])
-            model.optimizer     = state['optimizer']
-            model.in_channels   = self.in_channels
-            model.out_channels  = state['out_channels']
+            self.model.load_state_dict(state['state_dict'])
+            self.model.in_channels   = self.in_channels
+            self.model.out_channels  = self.out_channels
+            self.model.is_normalized = self.is_normalized
+            self.model.is_residual   = self.is_residual
+            self.model.double_skip   = self.double_skip
 
         if self.loss_type == 'CE':
             loss_fn = nn.CrossEntropyLoss()
@@ -158,7 +160,10 @@ class Train:
                 'params': self.params,
                 'state_dict': self.model.state_dict(),
                 'optimizer': optimizer.state_dict(),
-                'out_channels': self.out_channels
+                'out_channels': self.out_channels,
+                'is_normalized': self.is_normalized,
+                'is_residual': self.is_residual,
+                'double_skip': self.double_skip
             }
 
             torch.save(state, self.model_file)
