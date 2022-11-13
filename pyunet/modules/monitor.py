@@ -11,10 +11,24 @@ class Monitor:
     def __init__(self, params={}):
         self.params = params
 
-        self.device     = params.get('device')
-        self.gpu_index  = params.get('gpu_index')
-        self.video      = params.get('video')
-        self.model_file = params.get('model_file')
+        self.device         = params.get('device')
+        self.gpu_index      = params.get('gpu_index')
+        self.video          = params.get('video')
+        self.model_file     = params.get('model_file')
+        self.img_width      = params.get('img_width')
+        self.img_height     = params.get('img_height')
+        self.display_width  = params.get('display_width') or 800
+        self.display_height = params.get('display_height') or 640
+        self.in_channels    = params.get('in_channels') or 3
+        self.out_channels   = params.get('out_channels') or 2
+        self.is_normalized  = params.get('is_normalized') or True
+        self.is_residual    = params.get('is_residual') or True
+        self.double_skip    = params.get('double_skip') or True
+
+        self.dim = (self.img_width, self.img_height)
+        self.display_dim = (self.display_width, self.display_height)
+
+        print("Dimension: {}".format(self.dim))
 
     def execute(self):
         try:
@@ -31,21 +45,13 @@ class Monitor:
         print("Loading model {}...".format(self.model_file))
         state = torch.load(self.model_file)
 
-        saved_params = state['params']
-
-        img_width   = saved_params.get('img_width')
-        img_height  = saved_params.get('img_height')
-        dim         = (img_width, img_height)
-
-        in_channels     = saved_params.get('in_channels') or 3
-        out_channels    = saved_params.get('out_channels') or 3
-        features        = saved_params.get('features') or [64, 128, 256, 512]
-
-        model   = UNet(
-                    in_channels=in_channels,
-                    out_channels=out_channels,
-                    features=features
-                  ).to(self.device)
+        model = UNet(
+            in_channels=self.in_channels,
+            out_channels=self.out_channels,
+            is_normalized=self.is_normalized,
+            is_residual=self.is_residual,
+            double_skip=self.double_skip
+        ).to(self.device)
 
         model.load_state_dict(state['state_dict'])
 
@@ -62,7 +68,7 @@ class Monitor:
                 rows, cols, _   = frame.shape
                 original_dim    = (cols, rows)
 
-                image = cv2.resize(frame, dim) / 255
+                image = cv2.resize(frame, self.dim) / 255
                 image = image.transpose((2, 0, 1))
 
                 x = torch.Tensor(
@@ -74,10 +80,10 @@ class Monitor:
                 result = model.forward(x)
                 result = torch.argmax(result, 1).detach().cpu().numpy().astype(np.float32)
 
-                result = result.transpose((1, 2, 0)) / state['out_channels']
+                result = result.transpose((1, 2, 0)) / self.out_channels
 
-                cv2.imshow("Original", frame)
-                cv2.imshow("Segmented", cv2.resize(result, (600, 400)))
+                cv2.imshow("Original", cv2.resize(frame, self.display_dim))
+                cv2.imshow("Segmented", cv2.resize(result, self.display_dim))
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break

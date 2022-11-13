@@ -19,12 +19,17 @@ mode_choices = [
     "sample-pair"
 ]
 
+model_type_choices = [
+    "unet",
+    "unet_rd"
+]
+
 def main():
     parser = argparse.ArgumentParser(description="PyUNET: Python implementation of UNET")
 
     parser.add_argument("--mode", help="Mode to be used", choices=mode_choices, type=str, required=True)
-    parser.add_argument("--img-width", help="Image width", type=int, default=260)
-    parser.add_argument("--img-height", help="Image height", type=int, default=260)
+    parser.add_argument("--img-width", help="Image width", type=int, default=256)
+    parser.add_argument("--img-height", help="Image height", type=int, default=256)
     parser.add_argument("--device", help="Device used for training", choices=["cpu", "cuda"], type=str, default="cpu")
     parser.add_argument("--gpu-index", help="GPU index", type=int, default=0)
     parser.add_argument("--input-img-dir", help="Input image directory", type=str)
@@ -41,8 +46,10 @@ def main():
     parser.add_argument("--video", help="Video index", type=str, default="0")
     parser.add_argument("--img-suffix", help="Img Suffix", type=str, default="jpg")
     parser.add_argument("--cont", help="Continue training", type=bool, default=False)
-    parser.add_argument("--is-normalized", help="Use instance normalization", type=bool, default=False)
     parser.add_argument("--loss-type", help="Type of loss function", type=str, default='CE')
+    parser.add_argument("--display-width", help="Display width", type=int, default=800)
+    parser.add_argument("--display-height", help="Display height", type=int, default=640)
+    parser.add_argument("--model-type", help="UNet model type", type=str, choices=model_type_choices, default='unet')
 
     args = parser.parse_args()
 
@@ -64,8 +71,10 @@ def main():
     unique_values   = args.unique_values
     video           = args.video
     cont            = args.cont
-    is_normalized   = args.is_normalized
     loss_type       = args.loss_type
+    display_width   = args.display_width
+    display_height  = args.display_height
+    model_type      = args.model_type
 
     if mode =="train":
         params = {
@@ -82,8 +91,8 @@ def main():
             'in_channels':      in_channels,
             'out_channels':     out_channels,
             'cont':             cont,
-            'is_normalized':    is_normalized,
-            'loss_type':        loss_type
+            'loss_type':        loss_type,
+            'model_type':       model_type
         }
 
         cmd = Train(params=params)
@@ -94,7 +103,8 @@ def main():
             'model_file':   model_file,
             'input_img':    input_img,
             'gpu_index':    gpu_index,
-            'device':       device
+            'device':       device,
+            'model_type':   model_type
         }
 
         cmd = Forward(params=params)
@@ -102,10 +112,17 @@ def main():
 
     elif mode =="monitor":
         params = {
-            'model_file':   model_file,
-            'video':        video,
-            'gpu_index':    gpu_index,
-            'device':       device
+            'model_file':       model_file,
+            'img_width':        img_width,
+            'img_height':       img_height,
+            'video':            video,
+            'gpu_index':        gpu_index,
+            'device':           device,
+            'in_channels':      in_channels,
+            'out_channels':     out_channels,
+            'display_hidth':    display_width,
+            'display_height':   display_height,
+            'model_type':       model_type
         }
 
         cmd = Monitor(params=params)

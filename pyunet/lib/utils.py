@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 import torch
 
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
 def dice_score(pred, true, k=0):
     intersection = np.sum(pred[true==k]) * 2.0
     dice = intersection / (np.sum(pred) + np.sum(true))

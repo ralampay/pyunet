@@ -19,6 +19,7 @@ from sklearn.metrics import recall_score
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
+from lib.unet_rd import UNetRd
 from lib.loss_functions import dice_loss, tversky_loss
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score
 
@@ -26,23 +27,21 @@ class Train:
     def __init__(self, params={}):
         self.params = params
 
-        self.img_width      = params.get('img_height')
-        self.img_height     = params.get('img_height')
-        self.device         = params.get('device')
-        self.gpu_index      = params.get('gpu_index')
-        self.input_img_dir  = params.get('input_img_dir')
-        self.input_mask_dir = params.get('input_mask_dir')
-        self.epochs         = params.get('epochs')
-        self.learning_rate  = params.get('learning_rate')
-        self.model_file     = params.get('model_file')
-        self.batch_size     = params.get('batch_size')
-        self.in_channels    = params.get('in_channels') or 3
-        self.out_channels   = params.get('out_channels') or 3
-        self.cont           = params.get('cont') or False
-        self.is_normalized  = params.get('is_normalized')
-        self.is_residual    = params.get('is_residual')
-        self.double_skip    = params.get('double_skip')
-        self.loss_type      = params.get('loss_type') or 'CE'
+        self.img_width              = params.get('img_height')
+        self.img_height             = params.get('img_height')
+        self.device                 = params.get('device')
+        self.gpu_index              = params.get('gpu_index')
+        self.input_img_dir          = params.get('input_img_dir')
+        self.input_mask_dir         = params.get('input_mask_dir')
+        self.epochs                 = params.get('epochs')
+        self.learning_rate          = params.get('learning_rate')
+        self.model_file             = params.get('model_file')
+        self.batch_size             = params.get('batch_size')
+        self.in_channels            = params.get('in_channels') or 3
+        self.out_channels           = params.get('out_channels') or 3
+        self.cont                   = params.get('cont') or False
+        self.loss_type              = params.get('loss_type') or 'CE'
+        self.model_type             = params.get('model_type') or 'unet'
 
         self.test_img_dir   = params.get('test_img_dir') or None
         self.test_mask_dir  = params.get('test_mask_dir') or None
@@ -58,8 +57,6 @@ class Train:
 
     def execute(self):
         print("Training model...")
-        if self.is_normalized:
-            print("Using regularization...")
 
         print("input_img_dir: {}".format(self.input_img_dir))
         print("input_mask_dir: {}".format(self.input_mask_dir))
@@ -68,13 +65,16 @@ class Train:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        self.model = UNet(
-            in_channels=self.in_channels, 
-            out_channels=self.out_channels,
-            is_normalized=self.is_normalized,
-            is_residual=self.is_residual,
-            double_skip=self.double_skip
-        ).to(self.device)
+        if self.model_type == 'unet':
+            self.model = UNet(
+                in_channels=self.in_channels, 
+                out_channels=self.out_channels
+            ).to(self.device)
+        elif self.model_type == 'unet_rd':
+            self.model = UNetRd(
+                in_channels=self.in_channels, 
+                out_channels=self.out_channels
+            ).to(self.device)
 
         print(self.model)
 
@@ -85,11 +85,9 @@ class Train:
             )
 
             self.model.load_state_dict(state['state_dict'])
+            self.model.optimizer     = state['optimizer']
             self.model.in_channels   = self.in_channels
             self.model.out_channels  = self.out_channels
-            self.model.is_normalized = self.is_normalized
-            self.model.is_residual   = self.is_residual
-            self.model.double_skip   = self.double_skip
 
         if self.loss_type == 'CE':
             loss_fn = nn.CrossEntropyLoss()

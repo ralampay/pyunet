@@ -8,11 +8,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 from double_conv import DoubleConv
 from normalized_double_conv import NormalizedDoubleConv
 
-class UNet(nn.Module):
+class UNetRd(nn.Module):
     def __init__(
         self, in_channels=3, out_channels=1
     ):
-        super(UNet, self).__init__()
+        super(UNetRd, self).__init__()
 
         self.in_channels    = in_channels
         self.out_channels   = out_channels
@@ -23,10 +23,10 @@ class UNet(nn.Module):
 
         self.bottleneck = DoubleConv(512, 512 * 2)
 
-        self.downs.append(DoubleConv(in_channels, 64))
-        self.downs.append(DoubleConv(64, 128))
-        self.downs.append(DoubleConv(128, 256))
-        self.downs.append(DoubleConv(256, 512))
+        self.downs.append(NormalizedDoubleConv(in_channels, 64))
+        self.downs.append(NormalizedDoubleConv(64, 128))
+        self.downs.append(NormalizedDoubleConv(128, 256))
+        self.downs.append(NormalizedDoubleConv(256, 512))
 
         self.ups.append(
             nn.ConvTranspose2d(
@@ -37,7 +37,7 @@ class UNet(nn.Module):
             )
         )
 
-        self.ups.append(DoubleConv(512 * 2, 512))
+        self.ups.append(NormalizedDoubleConv(512 * 2, 512))
         
         self.ups.append(
             nn.ConvTranspose2d(
@@ -48,7 +48,7 @@ class UNet(nn.Module):
             )
         )
 
-        self.ups.append(DoubleConv(256 * 2, 256))
+        self.ups.append(NormalizedDoubleConv(256 * 2, 256))
         
         self.ups.append(
             nn.ConvTranspose2d(
@@ -59,7 +59,7 @@ class UNet(nn.Module):
             )
         )
 
-        self.ups.append(DoubleConv(128 * 2, 128))
+        self.ups.append(NormalizedDoubleConv(128 * 2, 128))
 
         self.ups.append(
             nn.ConvTranspose2d(
@@ -70,7 +70,7 @@ class UNet(nn.Module):
             )
         )
 
-        self.ups.append(DoubleConv(64 * 2, 64))
+        self.ups.append(NormalizedDoubleConv(64 * 2, 64))
 
         self.final_conv = nn.Conv2d(64, out_channels, kernel_size=1)
 
