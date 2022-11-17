@@ -78,7 +78,7 @@ class Train:
 
         print(self.model)
 
-        if self.cont:
+        if self.cont and os.path.exists(self.model_file):
             state = torch.load(
                 self.model_file, 
                 map_location=self.device
@@ -86,8 +86,6 @@ class Train:
 
             self.model.load_state_dict(state['state_dict'])
             self.model.optimizer     = state['optimizer']
-            self.model.in_channels   = self.in_channels
-            self.model.out_channels  = self.out_channels
 
         if self.loss_type == 'CE':
             loss_fn = nn.CrossEntropyLoss()
@@ -155,13 +153,8 @@ class Train:
             print("Saving model to {}...".format(self.model_file))
 
             state = {
-                'params': self.params,
                 'state_dict': self.model.state_dict(),
-                'optimizer': optimizer.state_dict(),
-                'out_channels': self.out_channels,
-                'is_normalized': self.is_normalized,
-                'is_residual': self.is_residual,
-                'double_skip': self.double_skip
+                'optimizer': optimizer.state_dict()
             }
 
             torch.save(state, self.model_file)
