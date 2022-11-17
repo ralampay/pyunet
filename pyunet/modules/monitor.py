@@ -6,6 +6,7 @@ import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
+from lib.unet_rd import UNetRd
 
 class Monitor:
     def __init__(self, params={}):
@@ -21,12 +22,9 @@ class Monitor:
         self.display_height = params.get('display_height') or 640
         self.in_channels    = params.get('in_channels') or 3
         self.out_channels   = params.get('out_channels') or 2
-        self.is_normalized  = params.get('is_normalized') or True
-        self.is_residual    = params.get('is_residual') or True
-        self.double_skip    = params.get('double_skip') or True
-
-        self.dim = (self.img_width, self.img_height)
-        self.display_dim = (self.display_width, self.display_height)
+        self.model_type     = params.get('model_type') or 'unet'
+        self.dim            = (self.img_width, self.img_height)
+        self.display_dim    = (self.display_width, self.display_height)
 
         print("Dimension: {}".format(self.dim))
 
@@ -45,13 +43,18 @@ class Monitor:
         print("Loading model {}...".format(self.model_file))
         state = torch.load(self.model_file)
 
-        model = UNet(
-            in_channels=self.in_channels,
-            out_channels=self.out_channels,
-            is_normalized=self.is_normalized,
-            is_residual=self.is_residual,
-            double_skip=self.double_skip
-        ).to(self.device)
+        print("Using model type: {}".format(self.model_type))
+
+        if self.model_type == 'unet':
+            model = UNet(
+                in_channels=self.in_channels,
+                out_channels=self.out_channels
+            ).to(self.device)
+        elif self.model_type == 'unet_rd':
+            model = UNetRd(
+                in_channels=self.in_channels,
+                out_channels=self.out_channels
+            ).to(self.device)
 
         model.load_state_dict(state['state_dict'])
 
