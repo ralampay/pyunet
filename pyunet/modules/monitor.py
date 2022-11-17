@@ -44,6 +44,8 @@ class Monitor:
         state = torch.load(self.model_file)
 
         print("Using model type: {}".format(self.model_type))
+        print("In Channels: {}".format(self.in_channels))
+        print("Out Channels: {}".format(self.out_channels))
 
         if self.model_type == 'unet':
             model = UNet(

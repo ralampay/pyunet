@@ -101,6 +101,8 @@ def main():
     elif mode =="forward":
         params = {
             'model_file':   model_file,
+            'img_width':    img_width,
+            'img_height':   img_height,
             'input_img':    input_img,
             'gpu_index':    gpu_index,
             'device':       device,
