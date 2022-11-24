@@ -20,7 +20,7 @@ from sklearn.metrics import recall_score
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_rd import UNetRd
-from lib.loss_functions import dice_loss, tversky_loss
+from lib.loss_functions import dice_loss, tversky_loss, FocalLoss
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score
 
 class Train:
@@ -93,11 +93,12 @@ class Train:
             loss_fn = dice_loss
         elif self.loss_type == 'TL':
             loss_fn = tversky_loss
+        elif self.loss_type == 'FL':
+            loss_fn = FocalLoss()
         else:
-            loss_fn = nn.CrossEntropyLoss()
+            raise ValueError("Unsupported loss_type {}".format(self.loss_type))
 
         print("Loss Type: {}".format(self.loss_type))
-
 
         optimizer   = optim.Adam(self.model.parameters(), lr=self.learning_rate)
         scaler      = torch.cuda.amp.GradScaler()
