@@ -8,16 +8,16 @@ class NormalizedDoubleConv(nn.Module):
         super(NormalizedDoubleConv, self).__init__()
 
         self.first_conv = DepthwiseSeperableConv(in_channels, out_channels)
-        self.first_norm = nn.InstanceNorm2d(out_channels, affine=True)
-        self.first_actv = nn.PReLU(num_parameters=out_channels)
+        self.first_norm = nn.BatchNorm2d(out_channels)
+        self.first_actv = nn.ReLU6(inplace=True)
 
         self.second_conv = DepthwiseSeperableConv(out_channels, out_channels)
-        self.second_norm = nn.InstanceNorm2d(out_channels, affine=True)
-        self.second_actv = nn.PReLU(num_parameters=out_channels)
+        self.second_norm = nn.BatchNorm2d(out_channels)
+        self.second_actv = nn.ReLU6(inplace=True)
 
         self.skip_conn = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
-            nn.InstanceNorm2d(out_channels, affine=True)
+            nn.BatchNorm2d(out_channels)
         )
 
     def forward(self, x):
