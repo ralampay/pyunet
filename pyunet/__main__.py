@@ -3,20 +3,23 @@ import argparse
 import os
 import torch
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
+#sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-from modules.train import Train
-from modules.forward import Forward
-from modules.monitor import Monitor
-from modules.generate_tiff import GenerateTiff
-from modules.sample_pair import SamplePair
+from .modules.train import Train
+from .modules.forward import Forward
+from .modules.monitor import Monitor
+from .modules.generate_tiff import GenerateTiff
+from .modules.sample_pair import SamplePair
+from .modules.examine_model import ExamineModel
 
 mode_choices = [
     "train",
     "forward",
     "generate-tiff",
     "monitor",
-    "sample-pair"
+    "sample-pair",
+    "benchmark",
+    "examine-model"
 ]
 
 model_type_choices = [
@@ -75,6 +78,7 @@ def main():
     display_width   = args.display_width
     display_height  = args.display_height
     model_type      = args.model_type
+    img_suffix      = args.img_suffix
 
     if mode =="train":
         params = {
@@ -145,10 +149,22 @@ def main():
         params = {
             'input_img_dir':    input_img_dir,
             'output_img_dir':   output_img_dir,
-            'unique_values':    unique_values
+            'unique_values':    unique_values,
+            'img_suffix':       img_suffix
         }
 
         cmd = GenerateTiff(params=params)
+        cmd.execute()
+    
+    elif mode == "examine-model":
+        params = {
+            'in_channels':  in_channels,
+            'out_channels': out_channels,
+            'model_type':   model_type,
+            'device':       device
+        }
+
+        cmd = ExamineModel(params=params)
         cmd.execute()
 
     else:

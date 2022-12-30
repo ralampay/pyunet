@@ -3,10 +3,9 @@ import torch.nn as nn
 import torchvision.transforms.functional as TF
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-from double_conv import DoubleConv
-from normalized_double_conv import NormalizedDoubleConv
+from .double_conv import DoubleConv
+from .normalized_double_conv import NormalizedDoubleConv
 
 class UNet(nn.Module):
     def __init__(

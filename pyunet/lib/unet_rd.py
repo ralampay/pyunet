@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 from double_conv import DoubleConv
 from normalized_double_conv import NormalizedDoubleConv
+from attention_block import AttentionBlock
 
 class UNetRd(nn.Module):
     def __init__(

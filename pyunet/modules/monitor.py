@@ -73,6 +73,8 @@ class Monitor:
                 rows, cols, _   = frame.shape
                 original_dim    = (cols, rows)
 
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
                 image = cv2.resize(frame, self.dim) / 255
                 image = image.transpose((2, 0, 1))
 
