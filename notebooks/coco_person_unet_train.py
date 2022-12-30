@@ -40,17 +40,15 @@ device         = 'cuda'
 gpu_index      = 0
 input_img_dir  = img_dir
 input_mask_dir = mask_dir
-model_file     = "coco-person.pth"
-epochs         = 100
-learning_rate  = 0.0001
+model_file     = "coco-person-unet-rd-2.pth"
+epochs         = 200
+learning_rate  = 0.000001
 in_channels    = 3
 out_channels   = 2
-is_normalized  = True
 batch_size     = 10
 loss_type      = 'CE'
-is_residual    = True
-double_skip    = True
 cont           = True
+model_type     = 'unet_rd'
 
 params = {
     'img_height':     img_height,
@@ -63,15 +61,13 @@ params = {
     'learning_rate':  learning_rate,
     'in_channels':    in_channels,
     'out_channels':   out_channels,
-    'is_normalized':  is_normalized,
     'loss_type':      loss_type,
     'batch_size':     batch_size,
     'model_file':     model_file,
-    'is_residual':    is_residual,
-    'double_skip':    double_skip,
     'test_img_dir':   None,
     'test_mask_dir':  None,
-    'cont':           cont
+    'cont':           cont,
+    'model_type':     model_type
 }
 
 cmd = Train(params=params)

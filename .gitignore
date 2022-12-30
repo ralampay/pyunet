@@ -1,6 +1,8 @@
 pyunet/models
 models/*.pth
 
+#jobs/*.sh
+
 *.yaml
 *.yml
 
