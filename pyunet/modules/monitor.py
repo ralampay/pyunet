@@ -12,7 +12,7 @@ class Monitor:
     def __init__(self, params={}):
         self.params = params
 
-        self.device         = params.get('device')
+        self.device         = params.get('device') or 'cuda'
         self.gpu_index      = params.get('gpu_index')
         self.video          = params.get('video')
         self.model_file     = params.get('model_file')

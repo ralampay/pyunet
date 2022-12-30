@@ -11,6 +11,7 @@ from .modules.generate_tiff import GenerateTiff
 from .modules.sample_pair import SamplePair
 from .modules.examine_model import ExamineModel
 from .modules.generate_dataset import GenerateDataset
+from .modules.sample_frame import SampleFrame
 
 mode_choices = [
     "train",
@@ -20,7 +21,8 @@ mode_choices = [
     "sample-pair",
     "benchmark",
     "examine-model",
-    "generate-dataset"
+    "generate-dataset",
+    "sample-frame",
 ]
 
 model_type_choices = [
@@ -180,6 +182,21 @@ def main():
         }
 
         cmd = GenerateDataset(params=params)
+        cmd.execute()
+
+    elif mode == "sample-frame":
+        params = {
+            'img_width':    img_width,
+            'img_height':   img_height,
+            'input_img':    input_img,
+            'model_type':   model_type,
+            'model_file':   model_file,
+            'in_channels':  in_channels,
+            'out_channels': out_channels,
+            'device':       device
+        }
+
+        cmd = SampleFrame(params=params)
         cmd.execute()
 
     else:
