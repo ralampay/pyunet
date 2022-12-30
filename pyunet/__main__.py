@@ -2,8 +2,7 @@ import sys
 import argparse
 import os
 import torch
-
-#sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
+import datetime
 
 from .modules.train import Train
 from .modules.forward import Forward
@@ -11,6 +10,7 @@ from .modules.monitor import Monitor
 from .modules.generate_tiff import GenerateTiff
 from .modules.sample_pair import SamplePair
 from .modules.examine_model import ExamineModel
+from .modules.generate_dataset import GenerateDataset
 
 mode_choices = [
     "train",
@@ -19,13 +19,16 @@ mode_choices = [
     "monitor",
     "sample-pair",
     "benchmark",
-    "examine-model"
+    "examine-model",
+    "generate-dataset"
 ]
 
 model_type_choices = [
     "unet",
     "unet_rd"
 ]
+
+default_dataset_name = (datetime.datetime.now()).strftime("%Y%m%d%H%M%S")
 
 def main():
     parser = argparse.ArgumentParser(description="PyUNET: Python implementation of UNET")
@@ -53,6 +56,7 @@ def main():
     parser.add_argument("--display-width", help="Display width", type=int, default=800)
     parser.add_argument("--display-height", help="Display height", type=int, default=640)
     parser.add_argument("--model-type", help="UNet model type", type=str, choices=model_type_choices, default='unet')
+    parser.add_argument("--dataset-name", help="Dataset name", type=str, default="data-{}".format(default_dataset_name))
 
     args = parser.parse_args()
 
@@ -79,6 +83,7 @@ def main():
     display_height  = args.display_height
     model_type      = args.model_type
     img_suffix      = args.img_suffix
+    dataset_name    = args.dataset_name
 
     if mode =="train":
         params = {
@@ -165,6 +170,16 @@ def main():
         }
 
         cmd = ExamineModel(params=params)
+        cmd.execute()
+
+    elif mode == "generate-dataset":
+        params = {
+            'dataset_name':     dataset_name,
+            'input_img_dir':    input_img_dir,
+            'input_mask_dir':   input_mask_dir,
+        }
+
+        cmd = GenerateDataset(params=params)
         cmd.execute()
 
     else:
