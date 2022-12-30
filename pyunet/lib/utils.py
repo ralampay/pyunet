@@ -13,15 +13,16 @@ def dice_score(pred, true, k=0):
 
 def get_image(file, dim):
     img = cv2.resize(
-        cv2.imread(
-            file
+        cv2.cvtColor(
+            cv2.imread(file),
+            cv2.COLOR_BGR2RGB 
         ),
         dim
     ) / 255
 
     return img
 
-def get_mask(file, dim, num_classes=4):
+def get_mask(file, dim):
     img = cv2.resize(
         cv2.imread(
             file,

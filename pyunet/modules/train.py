@@ -265,7 +265,7 @@ class CustomDataset(Dataset):
         mask_path   = os.path.join(self.mask_dir, self.images_masked[index])
 
         img = cv2.imread(img_path)
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         original_img    = (cv2.resize(img, self.dim) / 255).transpose((2, 0, 1))
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))
