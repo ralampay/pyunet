@@ -12,6 +12,7 @@ from .modules.sample_pair import SamplePair
 from .modules.examine_model import ExamineModel
 from .modules.generate_dataset import GenerateDataset
 from .modules.sample_frame import SampleFrame
+from .modules.extract_unique_gray import ExtractUniqueGray
 
 mode_choices = [
     "train",
@@ -23,6 +24,7 @@ mode_choices = [
     "examine-model",
     "generate-dataset",
     "sample-frame",
+    "extract-unique-gray"
 ]
 
 model_type_choices = [
@@ -197,6 +199,15 @@ def main():
         }
 
         cmd = SampleFrame(params=params)
+        cmd.execute()
+
+    elif mode == "extract-unique-gray":
+        params = {
+            "input_img_dir":    input_img_dir,
+            "img_suffix":       img_suffix
+        }
+
+        cmd = ExtractUniqueGray(params=params)
         cmd.execute()
 
     else:
