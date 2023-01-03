@@ -89,7 +89,9 @@ class Monitor:
 
                 result = result.transpose((1, 2, 0)) / self.out_channels
 
-                cv2.imshow("Original", cv2.resize(frame, self.display_dim))
+                display_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+                cv2.imshow("Original", cv2.resize(display_frame, self.display_dim))
                 cv2.imshow("Segmented", cv2.resize(result, self.display_dim))
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
