@@ -14,6 +14,10 @@ class GenerateTiff:
         self.img_suffix     = params.get('img_suffix') or 'jpg'
 
     def execute(self):
+        print('Mode: GenerateTiff')
+        print('input_img_dir: {}'.format(self.input_img_dir))
+        print('output_img_dir: {}'.format(self.output_img_dir))
+
         for filename in os.listdir(self.input_img_dir):
             img = cv2.imread(os.path.join(self.input_img_dir, filename))
 
@@ -39,7 +43,13 @@ class GenerateTiff:
         for r in range(rows):
             for c in range(cols):
                 for idx, val in enumerate(self.unique_values):
-                    if val == img_grayscale[r, c]:
+                    px_val = img_grayscale[r, c]
+
+                    # If binary, then treat all values > 0 as white
+                    if len(self.unique_values) <= 2 and px_val > 0:
+                        px_val = 255
+
+                    if val == px_val:
                         tiff[r, c] = idx
 
         return tiff
