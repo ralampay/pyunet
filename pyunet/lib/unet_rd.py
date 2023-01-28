@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 from double_conv import DoubleConv
 from normalized_double_conv import NormalizedDoubleConv
 from attention_block import AttentionBlock
+from normalized_double_conv import AttentionConv2d
 
 class UNetRd(nn.Module):
     def __init__(
@@ -90,6 +91,7 @@ class UNetRd(nn.Module):
 
         for idx in range(0, len(self.ups), 2):
             x = self.ups[idx](x)
+
             #print(x.shape[-1])
             skip_connection = skip_connections[idx//2]
 

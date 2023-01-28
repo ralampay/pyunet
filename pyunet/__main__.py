@@ -13,6 +13,7 @@ from .modules.examine_model import ExamineModel
 from .modules.generate_dataset import GenerateDataset
 from .modules.sample_frame import SampleFrame
 from .modules.extract_unique_gray import ExtractUniqueGray
+from .modules.benchmark import Benchmark
 
 mode_choices = [
     "train",
@@ -61,6 +62,9 @@ def main():
     parser.add_argument("--display-height", help="Display height", type=int, default=640)
     parser.add_argument("--model-type", help="UNet model type", type=str, choices=model_type_choices, default='unet')
     parser.add_argument("--dataset-name", help="Dataset name", type=str, default="data-{}".format(default_dataset_name))
+    parser.add_argument("--test-img-dir", help="Test image dir", type=str, default="test/images")
+    parser.add_argument("--test-mask-dir", help="Test mask dir", type=str, default="test/masks")
+    parser.add_argument("--sampled-index", help="Sampled index", type=int, default=-1)
 
     args = parser.parse_args()
 
@@ -88,6 +92,9 @@ def main():
     model_type      = args.model_type
     img_suffix      = args.img_suffix
     dataset_name    = args.dataset_name
+    test_img_dir    = args.test_img_dir
+    test_mask_dir   = args.test_mask_dir
+    sampled_index   = args.sampled_index
 
     if mode =="train":
         params = {
@@ -148,7 +155,12 @@ def main():
             'img_width':        img_width,
             'img_height':       img_height,
             'input_img_dir':    input_img_dir,
-            'input_mask_dir':   input_mask_dir
+            'input_mask_dir':   input_mask_dir,
+            'model_file':       model_file,
+            'model_type':       model_type,
+            'device':           device,
+            'gpu_index':        gpu_index,
+            'sampled_index':    sampled_index
         }
         
         cmd = SamplePair(params=params)
@@ -208,6 +220,23 @@ def main():
         }
 
         cmd = ExtractUniqueGray(params=params)
+        cmd.execute()
+
+    elif mode == "benchmark":
+        params = {
+            'img_width':        img_width,
+            'img_height':       img_height,
+            'device':           device,
+            'gpu_index':        gpu_index,
+            'input_img_dir':    input_img_dir,
+            'input_mask_dir':   input_mask_dir,
+            'model_file':       model_file,
+            'model_type':       model_type,
+            'in_channels':      in_channels,
+            'out_channels':     out_channels,
+        }
+
+        cmd = Benchmark(params=params)
         cmd.execute()
 
     else:

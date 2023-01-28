@@ -42,7 +42,6 @@ env/
 
 tmp/
 notebooks/tmp/
-bin/*.sh
 
 # Ignore 
 
