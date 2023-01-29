@@ -5,6 +5,7 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 import glob
+import time
 from sklearn.metrics import jaccard_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
@@ -75,6 +76,8 @@ class Benchmark:
         ave_specificity = 0.0
         ave_jaccard     = 0.0
 
+        start_time = time.time()
+
         for i in range(num_images):
             image_file  = test_images[i]
             mask_file   = test_masks[i]
@@ -101,6 +104,11 @@ class Benchmark:
             ave_specificity += specificity
             ave_jaccard += jaccard
 
+        end_time = time.time()
+
+        elapsed_time = end_time - start_time
+        elapsed_time = round(elapsed_time, 4)
+
         ave_accuracy    = ave_accuracy / num_images
         ave_f1          = ave_f1 / num_images
         ave_precision   = ave_precision / num_images
@@ -117,7 +125,8 @@ class Benchmark:
                 'ave_precision':    ave_precision,
                 'ave_recall':       ave_recall,
                 'ave_specificity':  ave_specificity,
-                'ave_jaccard':      ave_jaccard
+                'ave_jaccard':      ave_jaccard,
+                'elapsed_time':     elapsed_time
             }
         ]
 
