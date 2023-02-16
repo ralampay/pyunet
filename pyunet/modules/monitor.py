@@ -26,6 +26,15 @@ class Monitor:
         self.dim            = (self.img_width, self.img_height)
         self.display_dim    = (self.display_width, self.display_height)
 
+        self.colors = []
+
+        for i in range(self.out_channels - 1):
+            self.colors.append(np.array([
+                int(np.random.uniform(0, 255)), 
+                int(np.random.uniform(0, 255)), 
+                int(np.random.uniform(0, 255))
+            ], dtype='uint8'))
+
         print("Dimension: {}".format(self.dim))
 
     def execute(self):
@@ -91,8 +100,15 @@ class Monitor:
 
                 display_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-                cv2.imshow("Original", cv2.resize(display_frame, self.display_dim))
-                cv2.imshow("Segmented", cv2.resize(result, self.display_dim))
+                result_display_frame = cv2.resize(display_frame, self.display_dim)
+                result_segmented = cv2.resize(result, self.display_dim)
+
+                masked_img = np.where(result_segmented[...,None], self.colors[0], result_display_frame)
+                result_mask_overlay = cv2.addWeighted(result_display_frame, 0.5, masked_img, 0.8, 0)
+
+                cv2.imshow("Original", result_display_frame)
+                cv2.imshow("Segmented", result_segmented)
+                cv2.imshow("Overlay", result_mask_overlay)
 
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
