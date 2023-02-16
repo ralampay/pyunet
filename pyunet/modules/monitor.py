@@ -41,7 +41,7 @@ class Monitor:
             self.device = "cuda:{}".format(self.gpu_index)
 
         print("Loading model {}...".format(self.model_file))
-        state = torch.load(self.model_file)
+        state = torch.load(self.model_file, map_location=self.device)
 
         print("Using model type: {}".format(self.model_type))
         print("In Channels: {}".format(self.in_channels))
