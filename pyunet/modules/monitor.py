@@ -9,6 +9,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_rd import UNetRd
 
+COLOR_RED = np.array([0, 0, 255], dtype='uint8')
+
 class Monitor:
     def __init__(self, params={}):
         self.params = params
@@ -109,8 +111,19 @@ class Monitor:
 
                 result_display_frame = cv2.resize(display_frame, self.display_dim)
                 result_segmented = cv2.resize(result, self.display_dim)
+                result_segmented = np.where(result_segmented != 0, 1.0, 0.0).astype('uint8')
 
-                masked_img = np.where(result_segmented[...,None], self.colors[0], result_display_frame)
+                contours, hierarchy = cv2.findContours(result_segmented, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+                cv2.drawContours(result_display_frame, contours, -1, (0, 255, 0), 3)
+
+                # find the biggest countour (c) by the area
+                c = max(contours, key = cv2.contourArea)
+                x,y,w,h = cv2.boundingRect(c)
+
+                # draw the biggest contour (c) in green
+                cv2.rectangle(result_display_frame,(x,y),(x+w,y+h),(255,0,0),2)
+
+                masked_img = np.where(result_segmented[...,None], COLOR_RED, result_display_frame)
                 result_mask_overlay = cv2.addWeighted(result_display_frame, 0.5, masked_img, 0.8, 0)
 
                 cv2.imshow("Original", result_display_frame)
