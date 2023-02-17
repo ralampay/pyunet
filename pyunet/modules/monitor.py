@@ -2,6 +2,7 @@ import sys
 import os
 import torch
 import cv2
+import time
 import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -75,6 +76,12 @@ class Monitor:
             print("Error in opening video {}".format(self.video))
             sys.exit()
 
+        # used to record the time at which we processed last frame
+        prev_frame_time = 0
+
+        # used to record the time at which we processed current frame
+        new_frame_time = 0
+
         while(cap.isOpened()):
             ret, frame = cap.read()
         
@@ -110,12 +117,20 @@ class Monitor:
                 cv2.imshow("Segmented", result_segmented)
                 cv2.imshow("Overlay", result_mask_overlay)
 
+                new_frame_time = time.time()
+
+                fps = round(1 / (new_frame_time - prev_frame_time), 3)
+                prev_frame_time = new_frame_time
+
+                print(f'\rFPS: {fps}', end="")
+
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break
 
             else:
                 break
 
+        print("")
         cap.release()
         
         cv2.destroyAllWindows()
