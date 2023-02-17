@@ -7,6 +7,8 @@ import datetime
 from .modules.train import Train
 from .modules.forward import Forward
 from .modules.monitor import Monitor
+from .modules.monitor_onnx import MonitorOnnx
+from .modules.export_onnx import ExportOnnx
 from .modules.generate_tiff import GenerateTiff
 from .modules.sample_pair import SamplePair
 from .modules.examine_model import ExamineModel
@@ -20,6 +22,8 @@ mode_choices = [
     "forward",
     "generate-tiff",
     "monitor",
+    "monitor-onnx",
+    "export-onnx",
     "sample-pair",
     "benchmark",
     "examine-model",
@@ -65,6 +69,7 @@ def main():
     parser.add_argument("--test-img-dir", help="Test image dir", type=str, default="test/images")
     parser.add_argument("--test-mask-dir", help="Test mask dir", type=str, default="test/masks")
     parser.add_argument("--sampled-index", help="Sampled index", type=int, default=-1)
+    parser.add_argument("--export-file", help="Export file", type=str, default='model.onnx')
 
     args = parser.parse_args()
 
@@ -95,6 +100,7 @@ def main():
     test_img_dir    = args.test_img_dir
     test_mask_dir   = args.test_mask_dir
     sampled_index   = args.sampled_index
+    export_file     = args.export_file
 
     if mode =="train":
         params = {
@@ -148,6 +154,24 @@ def main():
         }
 
         cmd = Monitor(params=params)
+        cmd.execute()
+
+    elif mode == "monitor-onnx":
+        params = {
+            'model_file':       model_file,
+            'img_width':        img_width,
+            'img_height':       img_height,
+            'video':            video,
+            'gpu_index':        gpu_index,
+            'device':           device,
+            'in_channels':      in_channels,
+            'out_channels':     out_channels,
+            'display_hidth':    display_width,
+            'display_height':   display_height,
+            'model_type':       model_type
+        }
+
+        cmd = MonitorOnnx(params=params)
         cmd.execute()
 
     elif mode == "sample-pair":
@@ -237,6 +261,22 @@ def main():
         }
 
         cmd = Benchmark(params=params)
+        cmd.execute()
+
+    elif mode == "export-onnx":
+        params = {
+            'device':       device,
+            'gpu_index':    gpu_index,
+            'model_file':   model_file,
+            'img_width':    img_width,
+            'img_height':   img_height,
+            'in_channels':  in_channels,
+            'out_channels': out_channels,
+            'model_type':   model_type,
+            'export_file':  export_file
+        }
+
+        cmd = ExportOnnx(params=params)
         cmd.execute()
 
     else:
