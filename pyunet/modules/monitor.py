@@ -8,6 +8,9 @@ import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_rd import UNetRd
+from lib.unet_atr import UNetAtr
+
+from utils import initialize_model
 
 COLOR_RED = np.array([0, 0, 255], dtype='uint8')
 
@@ -59,16 +62,12 @@ class Monitor:
         print("In Channels: {}".format(self.in_channels))
         print("Out Channels: {}".format(self.out_channels))
 
-        if self.model_type == 'unet':
-            model = UNet(
-                in_channels=self.in_channels,
-                out_channels=self.out_channels
-            ).to(self.device)
-        elif self.model_type == 'unet_rd':
-            model = UNetRd(
-                in_channels=self.in_channels,
-                out_channels=self.out_channels
-            ).to(self.device)
+        model = initialize_model(
+            self.in_channels,
+            self.out_channels,
+            self.model_type,
+            self.device
+        )
 
         model.load_state_dict(state['state_dict'])
 
@@ -114,21 +113,19 @@ class Monitor:
                 result_segmented = np.where(result_segmented != 0, 1.0, 0.0).astype('uint8')
 
                 contours, hierarchy = cv2.findContours(result_segmented, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                cv2.drawContours(result_display_frame, contours, -1, (0, 255, 0), 3)
 
                 # find the biggest countour (c) by the area
-                c = max(contours, key = cv2.contourArea)
-                x,y,w,h = cv2.boundingRect(c)
+                #c = max(contours, key = cv2.contourArea)
+                #x,y,w,h = cv2.boundingRect(c)
 
                 # draw the biggest contour (c) in green
-                cv2.rectangle(result_display_frame,(x,y),(x+w,y+h),(255,0,0),2)
+                #cv2.rectangle(result_display_frame,(x,y),(x+w,y+h),(255,0,0),2)
 
                 masked_img = np.where(result_segmented[...,None], COLOR_RED, result_display_frame)
                 result_mask_overlay = cv2.addWeighted(result_display_frame, 0.5, masked_img, 0.8, 0)
+                cv2.drawContours(result_mask_overlay, contours, -1, (0, 255, 0), 3)
 
-                cv2.imshow("Original", result_display_frame)
-                cv2.imshow("Segmented", result_segmented)
-                cv2.imshow("Overlay", result_mask_overlay)
+                cv2.imshow("Result", result_mask_overlay)
 
                 new_frame_time = time.time()
 

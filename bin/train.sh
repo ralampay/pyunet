@@ -11,14 +11,14 @@ IMG_WIDTH=128
 IMG_HEIGHT=128
 INPUT_IMG_DIR=/home/ralampay/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/train/images
 MASKED_IMG_DIR=/home/ralampay/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/train/masks
-MODEL_FILE=/home/ralampay/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/unet_rd.pth
+MODEL_FILE=/home/ralampay/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/unet_atr.pth
 BATCH_SIZE=2
 EPOCHS=100
 LEARNING_RATE=0.0001
 IN_CHANNELS=3
 OUT_CHANNELS=2
 LOSS_TYPE="CE"
-MODEL_TYPE=unet_rd
+MODEL_TYPE=unet_atr
 
 python -m pyunet \
   --mode train \

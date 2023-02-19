@@ -14,9 +14,7 @@ from sklearn.metrics import recall_score
 import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.unet import UNet
-from lib.unet_rd import UNetRd
-from lib.utils import get_image, get_mask, get_predicted_img, dice_score, count_parameters
+from lib.utils import get_image, get_mask, get_predicted_img, dice_score, count_parameters, initialize_model
 
 class Benchmark:
     def __init__(self, params={}):
@@ -43,16 +41,12 @@ class Benchmark:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        if self.model_type == 'unet':
-            self.model = UNet(
-                in_channels=self.in_channels, 
-                out_channels=self.out_channels
-            ).to(self.device)
-        elif self.model_type == 'unet_rd':
-            self.model = UNetRd(
-                in_channels=self.in_channels, 
-                out_channels=self.out_channels
-            ).to(self.device)
+        self.model = initialize_model(
+            self.in_channels,
+            self.out_channels,
+            self.model_type,
+            self.device
+        )
 
         state = torch.load(
             self.model_file,

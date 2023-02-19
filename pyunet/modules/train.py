@@ -16,12 +16,14 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
+from torch.utils.tensorboard import SummaryWriter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_rd import UNetRd
+from lib.unet_atr import UNetAtr
 from lib.loss_functions import dice_loss, tversky_loss, FocalLoss
-from lib.utils import get_image, get_mask, get_predicted_img, dice_score
+from lib.utils import get_image, get_mask, get_predicted_img, dice_score, initialize_model
 
 class Train:
     def __init__(self, params={}):
@@ -51,7 +53,8 @@ class Train:
         self.precisions     = []
         self.recalls        = []
         self.specificities  = []
-        self.losses         = []
+
+        self.writer = SummaryWriter()
 
         self.model = None
 
@@ -65,16 +68,12 @@ class Train:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        if self.model_type == 'unet':
-            self.model = UNet(
-                in_channels=self.in_channels, 
-                out_channels=self.out_channels
-            ).to(self.device)
-        elif self.model_type == 'unet_rd':
-            self.model = UNetRd(
-                in_channels=self.in_channels, 
-                out_channels=self.out_channels
-            ).to(self.device)
+        self.model = initialize_model(
+            self.in_channels,
+            self.out_channels,
+            self.model_type,
+            self.device
+        )
 
         print(self.model)
 
@@ -118,7 +117,7 @@ class Train:
         )
 
         for epoch in range(self.epochs):
-            print("Epoch: {}".format(epoch))
+            print("Epoch: {}".format(epoch+1))
 
             ave_loss, ave_accuracy, ave_f1, ave_precision, ave_recall, ave_specificity = self.train_fn(
                 train_loader, 
@@ -130,7 +129,8 @@ class Train:
                 test_mask_dir=self.test_mask_dir
             )
 
-            self.losses.append(ave_loss)
+            # write loss to tensorboard
+            self.writer.add_scalar(f"Loss ({self.model_type})", ave_loss, epoch+1)
 
             print("Ave Loss: {}".format(ave_loss))
 
@@ -160,6 +160,8 @@ class Train:
 
             torch.save(state, self.model_file)
 
+            self.writer.flush()
+
 
     def train_fn(self, loader, model, optimizer, loss_fn, scaler, test_img_dir=None, test_mask_dir=None):
         loop = tqdm(loader)
@@ -185,6 +187,8 @@ class Train:
 
             # update tqdm
             loop.set_postfix(loss=loss.item())
+
+            # Write to tensorboard
 
             ave_loss += loss.item()
             count += 1

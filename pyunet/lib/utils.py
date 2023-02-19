@@ -1,6 +1,36 @@
 import cv2
 import numpy as np
 import torch
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from lib.unet import UNet
+from lib.unet_rd import UNetRd
+from lib.unet_atr import UNetAtr
+
+def initialize_model(in_channels, out_channels, model_type, device):
+    model = None
+
+    if model_type == 'unet':
+        model = UNet(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_rd':
+        model = UNetRd(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_atr':
+        model = UNetAtr(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    else:
+        raise ValueError(f'Unsupported model_type {model_type}')
+
+    return model
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
