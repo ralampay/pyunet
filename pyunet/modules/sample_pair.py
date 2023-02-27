@@ -7,8 +7,7 @@ import random
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from lib.unet import UNet
-from lib.unet_rd import UNetRd
+from utils import initialize_model
 
 class SamplePair:
     def __init__(self, params={}):
@@ -76,16 +75,12 @@ class SamplePair:
 
         print("Using model type: {}".format(self.model_type))
 
-        if self.model_type == 'unet':
-            model = UNet(
-                in_channels=self.in_channels,
-                out_channels=self.out_channels
-            ).to(self.device)
-        elif self.model_type == 'unet_rd':
-            model = UNetRd(
-                in_channels=self.in_channels,
-                out_channels=self.out_channels
-            ).to(self.device)
+        model = initialize_model(
+            self.in_channels,
+            self.out_channels,
+            self.model_type,
+            self.device
+        )
 
         model.load_state_dict(state['state_dict'])
 

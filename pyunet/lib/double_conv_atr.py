@@ -26,6 +26,8 @@ class DoubleConvAtr(nn.Module):
 
         self.attention = AttentionConv2d(out_channels, out_channels, 1)
 
+        self.relu = nn.ReLU(inplace=True)
+
     def forward(self, x):
         x_result = self.conv(x)
 
@@ -34,5 +36,7 @@ class DoubleConvAtr(nn.Module):
 
         # Residual
         x_result += self.skip_conn(x)
+
+        x_result = self.relu(x_result)
 
         return x_result

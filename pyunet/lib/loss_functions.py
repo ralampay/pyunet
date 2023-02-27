@@ -16,6 +16,27 @@ class FocalLoss(nn.modules.loss._WeightedLoss):
         focal_loss = ((1 - pt) ** self.gamma * ce_loss).mean()
         return focal_loss
 
+def sym_unified_focal_loss(weight=0.5, delta=0.6, gamma=0.5):
+    """The Unified Focal loss is a new compound loss function that unifies Dice-based and cross entropy-based loss functions into a single framework.
+    Parameters
+    ----------
+    weight : float, optional
+        represents lambda parameter and controls weight given to symmetric Focal Tversky loss and symmetric Focal loss, by default 0.5
+    delta : float, optional
+        controls weight given to each class, by default 0.6
+    gamma : float, optional
+        focal parameter controls the degree of background suppression and foreground enhancement, by default 0.5
+    """
+    def loss_function(y_true,y_pred):
+      symmetric_ftl = symmetric_focal_tversky_loss(delta=delta, gamma=gamma)(y_true,y_pred)
+      symmetric_fl = symmetric_focal_loss(delta=delta, gamma=gamma)(y_true,y_pred)
+      if weight is not None:
+        return (weight * symmetric_ftl) + ((1-weight) * symmetric_fl)  
+      else:
+        return symmetric_ftl + symmetric_fl
+
+    return loss_function
+
 def dice_loss(p, y, eps=1e-7):
     """Computes the Sorensen-Dice loss
 

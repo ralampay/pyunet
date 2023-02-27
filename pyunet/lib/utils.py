@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_rd import UNetRd
 from lib.unet_atr import UNetAtr
+from lib.unet_attn import UNetAttn
 
 def initialize_model(in_channels, out_channels, model_type, device):
     model = None
@@ -24,6 +25,11 @@ def initialize_model(in_channels, out_channels, model_type, device):
         ).to(device)
     elif model_type == 'unet_atr':
         model = UNetAtr(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_attn':
+        model = UNetAttn(
             in_channels=in_channels,
             out_channels=out_channels
         ).to(device)

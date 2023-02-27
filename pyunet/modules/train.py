@@ -19,14 +19,14 @@ from sklearn.metrics import recall_score
 from torch.utils.tensorboard import SummaryWriter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.unet import UNet
-from lib.unet_rd import UNetRd
-from lib.unet_atr import UNetAtr
-from lib.loss_functions import dice_loss, tversky_loss, FocalLoss
+from lib.loss_functions import dice_loss, tversky_loss, FocalLoss, sym_unified_focal_loss
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score, initialize_model
 
 class Train:
-    def __init__(self, params={}):
+    def __init__(self, params={}, seed=0):
+        if seed >= 0:
+            torch.manual_seed(seed)
+
         self.params = params
 
         self.img_width              = params.get('img_height')

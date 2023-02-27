@@ -5,6 +5,7 @@ import sys
 import os
 
 from .double_conv_atr import DoubleConvAtr
+from normalized_double_conv import NormalizedDoubleConv
 
 class UNetAtr(nn.Module):
     def __init__(

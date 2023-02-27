@@ -9,16 +9,16 @@ DEVICE=cuda
 GPU_INDEX=0
 IMG_WIDTH=128
 IMG_HEIGHT=128
-INPUT_IMG_DIR=~/workspace/pyunet/notebooks/images/kvasir-capsule/images
-MASKED_IMG_DIR=~/workspace/pyunet/notebooks/images/kvasir-capsule/masks
-MODEL_FILE=~/workspace/pyunet/notebooks/images/kvasir-capsule/unet_attn.pth
+INPUT_IMG_DIR=/home/ralampay/workspace/pyunet/notebooks/images/covid19ctscandlmulti/training/images
+MASKED_IMG_DIR=/home/ralampay/workspace/pyunet/notebooks/images/covid19ctscandlmulti/training/masks
+MODEL_FILE=/home/ralampay/workspace/pyunet/notebooks/images/covid19ctscandlmulti/unet_atr.pth
 BATCH_SIZE=2
 EPOCHS=100
 LEARNING_RATE=0.0001
 IN_CHANNELS=3
-OUT_CHANNELS=2
-LOSS_TYPE=CE
-MODEL_TYPE=unet_attn
+OUT_CHANNELS=4
+LOSS_TYPE="CE"
+MODEL_TYPE=unet_atr
 
 python -m pyunet \
   --mode train \
