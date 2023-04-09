@@ -130,7 +130,7 @@ class Train:
             )
 
             # write loss to tensorboard
-            self.writer.add_scalar(f"Loss ({self.model_type})", ave_loss, epoch+1)
+            self.writer.add_scalar(f"Loss ({self.model_type}-{self.loss_type})", ave_loss, epoch+1)
 
             print("Ave Loss: {}".format(ave_loss))
 
