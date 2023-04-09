@@ -14,6 +14,7 @@ class AttentionConv2d(nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, x):
+        x0 = x
         # calculate attention coefficients
         x = self.conv(x)
 
@@ -21,6 +22,6 @@ class AttentionConv2d(nn.Module):
         
         attn_weights = torch.sum(attn_weights, dim=1, keepdim=True)
 
-        x = x * attn_weights
+        x = x0 * attn_weights
 
         return x

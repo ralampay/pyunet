@@ -28,6 +28,48 @@ source env/bin/activate
 
 ## Modules
 
+### Training a UNet model (and variants)
+
+Creates a UNet model based on the following implementations:
+
+* `unet`: UNet (original UNet) [https://arxiv.org/abs/1505.04597](https://arxiv.org/abs/1505.04597)
+* `unet_attn`: Attention UNet [https://arxiv.org/abs/1804.03999](https://arxiv.org/abs/1804.03999)
+* `unet_rd`: UNet RD (using self-attention)
+
+Loss type (loss function) can be defined as follows:
+
+* `CE`: Cross Entropy
+* `DL`: Dice Loss
+* `TL`: Tversky Loss
+* `FL`: Focal Loss
+
+Sample training script:
+
+```
+python -m pyunet \
+  --mode train \
+  --device $DEVICE \
+  --gpu-index $GPU_INDEX \
+  --img-width $IMG_WIDTH \
+  --img-height $IMG_HEIGHT \
+  --input-img-dir $INPUT_IMG_DIR \
+  --input-mask-dir $MASKED_IMG_DIR \
+  --model-file $MODEL_FILE \
+  --epochs $EPOCHS \
+  --batch-size $BATCH_SIZE \
+  --learning-rate $LEARNING_RATE \
+  --in-channels $IN_CHANNELS \
+  --out-channels $OUT_CHANNELS \
+  --model-type $MODEL_TYPE \
+  --loss-type $LOSS_TYPE \
+  --cont $CONT
+```
+
+Important flags:
+
+* `model-file`: The model file to be produced or continue training from (if `cont` is set to `True`)
+* `out-channels`: Number of expected labels. This includes `0` so binary would mean `--out-channels 2`
+
 ### Generate Tiff
 
 Generates a set of tiff images from masked values. Need to supply the unique grayscale values first since the program will convert the original masked colored image (presumed to be png) to grayscale then match it with the `--unique_values` flag.

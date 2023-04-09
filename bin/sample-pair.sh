@@ -9,9 +9,9 @@ DEVICE=cuda
 GPU_INDEX=0
 IMG_WIDTH=128
 IMG_HEIGHT=128
-INPUT_IMG_DIR=~/workspace/pyunet/notebooks/images/kvasir-capsule/test/images
-MASKED_IMG_DIR=~/workspace/pyunet/notebooks/images/kvasir-capsule/test/masks
-MODEL_FILE=~/workspace/pyunet/notebooks/images/kvasir-capsule/unet.pth
+INPUT_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/test/images
+MASKED_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/test/masks
+MODEL_FILE=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/unet.pth
 MODEL_TYPE=unet
 SAMPLED_INDEX=9
 
