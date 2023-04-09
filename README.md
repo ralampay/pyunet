@@ -26,9 +26,11 @@ For `venv` users:
 source env/bin/activate
 ```
 
-## Modules
+## Modes
 
-### Training a UNet model (and variants)
+Values passed in the `--mode [mode]` flag
+
+### Training a UNet model (and variants) `train`
 
 Creates a UNet model based on the following implementations:
 
@@ -63,6 +65,29 @@ python -m pyunet \
   --model-type $MODEL_TYPE \
   --loss-type $LOSS_TYPE \
   --cont $CONT
+```
+
+### Sample Pair `sample-pair`
+
+Displays the result of a given model by showing the original, mask and prediction of a an image. Important flags:
+
+* `input-img-dir`: Location of images to sample from
+* `input-mask-dir`: Mask (tiff) versions of the image
+* `sampled-index`: The index of an image to sample (random if not set)
+
+Sample invocation:
+
+```
+python -m pyunet \
+  --mode sample-pair \
+  --img-width $IMG_WIDTH \
+  --img-height $IMG_HEIGHT \
+  --input-img-dir $INPUT_IMG_DIR \
+  --input-mask-dir $MASKED_IMG_DIR \
+  --model-file $MODEL_FILE \
+  --device $DEVICE \
+  --model-type $MODEL_TYPE \
+  --sampled-index $SAMPLED_INDEX
 ```
 
 Important flags:
