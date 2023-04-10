@@ -2,10 +2,10 @@
 
 Python based tool for UNet
 
-<center>
-  <img src="assets/original.png"/>
-  <img src="assets/mask.png"/>
-</center>
+<p align="center">
+  <img src="assets/original.png" width="150"/>
+  <img src="assets/mask.png" width="150"/>
+</p>
 
 ## Installation and Setup
 
