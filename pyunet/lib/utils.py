@@ -9,6 +9,7 @@ from lib.unet import UNet
 from lib.unet_rd import UNetRd
 from lib.unet_atr import UNetAtr
 from lib.unet_attn import UNetAttn
+from lib.unet_attn_dp import UNetAttnDp
 
 def initialize_model(in_channels, out_channels, model_type, device):
     model = None
@@ -30,6 +31,11 @@ def initialize_model(in_channels, out_channels, model_type, device):
         ).to(device)
     elif model_type == 'unet_attn':
         model = UNetAttn(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_attn_dp':
+        model = UNetAttnDp(
             in_channels=in_channels,
             out_channels=out_channels
         ).to(device)

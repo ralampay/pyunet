@@ -6,7 +6,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 from attention_conv_2d import AttentionConv2d
 from depthwise_seperable_conv import DepthwiseSeperableConv
-from double_depthwise_pointwise_conv import DoubleDepthwisePointwiseConv
+from spatial_sse import SpatialSSE
 
 class NormalizedDoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels, padding=1):

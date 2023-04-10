@@ -36,7 +36,8 @@ model_type_choices = [
     "unet",
     "unet_rd",
     "unet_atr",
-    "unet_attn"
+    "unet_attn",
+    "unet_attn_dp"
 ]
 
 default_dataset_name = (datetime.datetime.now()).strftime("%Y%m%d%H%M%S")

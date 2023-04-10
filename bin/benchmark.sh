@@ -2,10 +2,10 @@ IMG_WIDTH=128
 IMG_HEIGHT=128
 DEVICE=cuda
 GPU_INDEX=0
-INPUT_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-02/test/images
-INPUT_MASK_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-02/test/masks
+INPUT_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/test/images
+INPUT_MASK_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/test/masks
+MODEL_FILE=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/unet_rd-FL.pth
 MODEL_TYPE=unet_rd
-MODEL_FILE=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-adenocarcinoma-128-01/unet_rd.pth
 IN_CHANNELS=3
 OUT_CHANNELS=2
 
