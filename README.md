@@ -2,6 +2,11 @@
 
 Python based tool for UNet
 
+<center>
+  <img src="assets/original.png"/>
+  <img src="assets/mask.png"/>
+</center>
+
 ## Installation and Setup
 
 1. Install dependencies
@@ -30,9 +35,7 @@ source env/bin/activate
 
 Values passed in the `--mode [mode]` flag
 
-### Training a UNet model (and variants) `train`
-
-Creates a UNet model based on the following implementations:
+### Training a UNet model (and variants) `train` Creates a UNet model based on the following implementations:
 
 * `unet`: UNet (original UNet) [https://arxiv.org/abs/1505.04597](https://arxiv.org/abs/1505.04597)
 * `unet_attn`: Attention UNet [https://arxiv.org/abs/1804.03999](https://arxiv.org/abs/1804.03999)
@@ -69,11 +72,15 @@ python -m pyunet \
 
 ### Sample Pair `sample-pair`
 
-Displays the result of a given model by showing the original, mask and prediction of a an image. Important flags:
+Displays the result of a given model by showing the original, mask and prediction of a an image. 
+
+Important flags:
 
 * `input-img-dir`: Location of images to sample from
 * `input-mask-dir`: Mask (tiff) versions of the image
 * `sampled-index`: The index of an image to sample (random if not set)
+* `model-file`: The model file to be produced or continue training from (if `cont` is set to `True`)
+* `out-channels`: Number of expected labels. This includes `0` so binary would mean `--out-channels 2`
 
 Sample invocation:
 
@@ -90,10 +97,30 @@ python -m pyunet \
   --sampled-index $SAMPLED_INDEX
 ```
 
-Important flags:
+### Benchmarka Model `benchmark`
 
-* `model-file`: The model file to be produced or continue training from (if `cont` is set to `True`)
-* `out-channels`: Number of expected labels. This includes `0` so binary would mean `--out-channels 2`
+Given an already trained model and test set, compute its performance in terms of F1, sensitivity, specificity, accuracy, dice_loss, etc...
+
+Important Flags:
+
+* `input-img-dir`: Directory containing original images for testing
+* `input-mask-dir`: Ground truth for test images
+
+Sample invocation:
+
+```
+python -m pyunet --mode benchmark \
+  --img-width $IMG_WIDTH \
+  --img-height $IMG_HEIGHT \
+  --device $DEVICE \
+  --gpu-index $GPU_INDEX \
+  --input-img-dir $INPUT_IMG_DIR \
+  --input-mask-dir $INPUT_MASK_DIR \
+  --model-type $MODEL_TYPE \
+  --model-file $MODEL_FILE \
+  --in-channels $IN_CHANNELS \
+  --out-channels $OUT_CHANNELS
+```
 
 ### Generate Tiff
 
