@@ -1,12 +1,21 @@
 # PyUNET
 
-Python based tool for UNet
+Python based tool for UNet and Variants
 
 <p align="center">
-  <img src="assets/original.png" width="250"/>
-  <img src="assets/mask.png" width="250"/>
-  <img src="assets/unet.png" width="250"/>
-  <img src="assets/unet_rd.png" width="250"/>
+  <img src="assets/original-1.png" width="150"/>
+  <img src="assets/mask-1.png" width="150"/>
+  <img src="assets/unet-1.png" width="150"/>
+  <img src="assets/unet-attn-1.png" width="150"/>
+  <img src="assets/unet-rd-1.png" width="150"/>
+</p>
+
+<p align="center">
+  <img src="assets/original-2.png" width="150"/>
+  <img src="assets/mask-2.png" width="150"/>
+  <img src="assets/unet-2.png" width="150"/>
+  <img src="assets/unet-attn-2.png" width="150"/>
+  <img src="assets/unet-rd-2.png" width="150"/>
 </p>
 
 ## Installation and Setup
