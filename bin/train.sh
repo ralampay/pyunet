@@ -11,13 +11,13 @@ IMG_WIDTH=128
 IMG_HEIGHT=128
 INPUT_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/train/images
 MASKED_IMG_DIR=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/train/masks
-MODEL_FILE=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/unet_attn_dp-FL.pth
+MODEL_FILE=~/Projects/Effect_of_RD_in_UNet_Segmentation/benchmarks/ebhi-seg-polyp-128-01/unet_attn_dp-CE.pth
 BATCH_SIZE=2
 EPOCHS=100
 LEARNING_RATE=0.0001
 IN_CHANNELS=3
 OUT_CHANNELS=2
-LOSS_TYPE=FL
+LOSS_TYPE=CE
 MODEL_TYPE=unet_attn_dp
 
 python -m pyunet \

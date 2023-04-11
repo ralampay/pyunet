@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 from double_conv import DoubleConv
 from attention_block_dp import AttentionBlockDp
+from depthwise_seperable_conv import DepthwiseSeperableConv
 from up_conv import UpConv
 
 class UNetAttnDp(nn.Module):
@@ -20,29 +21,36 @@ class UNetAttnDp(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.conv1 = DoubleConv(in_channels, 64)
-        self.conv2 = DoubleConv(64, 128)
-        self.conv3 = DoubleConv(128, 256)
-        self.conv4 = DoubleConv(256, 512)
-        self.conv5 = DoubleConv(512, 1024)
+#        self.conv1 = DoubleConv(in_channels, 64)
+#        self.conv2 = DoubleConv(64, 128)
+#        self.conv3 = DoubleConv(128, 256)
+#        self.conv4 = DoubleConv(256, 512)
+#        self.conv5 = DoubleConv(512, 1024)
+
+        self.conv1 = DepthwiseSeperableConv(in_channels, 64)
+        self.conv2 = DepthwiseSeperableConv(64, 128)
+        self.conv3 = DepthwiseSeperableConv(128, 256)
+        self.conv4 = DepthwiseSeperableConv(256, 512)
+        self.conv5 = DepthwiseSeperableConv(512, 1024)
 
         self.up5 = UpConv(1024, 512)
         self.attn5 = AttentionBlockDp(512, 512, 256)
-        self.up_conv5 = DoubleConv(1024, 512)
+        self.up_conv5 = DepthwiseSeperableConv(1024, 512)
 
         self.up4 = UpConv(512, 256)
         self.attn4 = AttentionBlockDp(256, 256, 128)
-        self.up_conv4 = DoubleConv(512, 256)
+        self.up_conv4 = DepthwiseSeperableConv(512, 256)
 
         self.up3 = UpConv(256, 128)
         self.attn3 = AttentionBlockDp(128, 128, 64)
-        self.up_conv3 = DoubleConv(256, 128)
+        self.up_conv3 = DepthwiseSeperableConv(256, 128)
 
         self.up2 = UpConv(128, 64)
         self.attn2 = AttentionBlockDp(64, 64, 32)
-        self.up_conv2 = DoubleConv(128, 64)
+        self.up_conv2 = DepthwiseSeperableConv(128, 64)
 
-        self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
+        #self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
+        self.conv_1x1 = DepthwiseSeperableConv(64, out_channels)
 
     def forward(self, x):
         # Encoding path

@@ -5,7 +5,6 @@ import sys
 import os
 
 from .double_conv import DoubleConv
-from .normalized_double_conv import NormalizedDoubleConv
 
 class UNet(nn.Module):
     def __init__(

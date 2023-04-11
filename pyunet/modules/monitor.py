@@ -6,9 +6,6 @@ import time
 import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.unet import UNet
-from lib.unet_rd import UNetRd
-from lib.unet_atr import UNetAtr
 
 from utils import initialize_model
 

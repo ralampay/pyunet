@@ -11,7 +11,6 @@ from .modules.monitor_onnx import MonitorOnnx
 from .modules.export_onnx import ExportOnnx
 from .modules.generate_tiff import GenerateTiff
 from .modules.sample_pair import SamplePair
-from .modules.examine_model import ExamineModel
 from .modules.generate_dataset import GenerateDataset
 from .modules.sample_frame import SampleFrame
 from .modules.extract_unique_gray import ExtractUniqueGray
@@ -26,7 +25,6 @@ mode_choices = [
     "export-onnx",
     "sample-pair",
     "benchmark",
-    "examine-model",
     "generate-dataset",
     "sample-frame",
     "extract-unique-gray"
@@ -34,8 +32,6 @@ mode_choices = [
 
 model_type_choices = [
     "unet",
-    "unet_rd",
-    "unet_atr",
     "unet_attn",
     "unet_attn_dp"
 ]
@@ -204,17 +200,6 @@ def main():
         cmd = GenerateTiff(params=params)
         cmd.execute()
     
-    elif mode == "examine-model":
-        params = {
-            'in_channels':  in_channels,
-            'out_channels': out_channels,
-            'model_type':   model_type,
-            'device':       device
-        }
-
-        cmd = ExamineModel(params=params)
-        cmd.execute()
-
     elif mode == "generate-dataset":
         params = {
             'dataset_name':     dataset_name,

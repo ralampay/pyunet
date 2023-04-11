@@ -7,8 +7,6 @@ import numpy as np
 import onnxruntime as ort
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.unet import UNet
-from lib.unet_rd import UNetRd
 
 class MonitorOnnx:
     def __init__(self, params={}):
