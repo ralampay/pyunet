@@ -6,8 +6,6 @@ import time
 import numpy as np
 import onnxruntime as ort
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 class MonitorOnnx:
     def __init__(self, params={}):
         self.params = params

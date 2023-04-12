@@ -37,22 +37,18 @@ class UNetAttnDp(nn.Module):
         self.up5 = UpConv(1024, 512)
         self.attn5 = AttentionBlockDp(512, 512, 256)
         self.up_conv5 = DepthwiseSeperableConv(1024, 512)
-        self.sse_5 = SpatialSSE(512)
 
         self.up4 = UpConv(512, 256)
         self.attn4 = AttentionBlockDp(256, 256, 128)
         self.up_conv4 = DepthwiseSeperableConv(512, 256)
-        self.sse_4 = SpatialSSE(256)
 
         self.up3 = UpConv(256, 128)
         self.attn3 = AttentionBlockDp(128, 128, 64)
         self.up_conv3 = DepthwiseSeperableConv(256, 128)
-        self.sse_3 = SpatialSSE(128)
 
         self.up2 = UpConv(128, 64)
         self.attn2 = AttentionBlockDp(64, 64, 32)
         self.up_conv2 = DepthwiseSeperableConv(128, 64)
-        self.sse_2 = SpatialSSE(64)
 
         #self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
         self.conv_1x1 = DepthwiseSeperableConv(64, out_channels)
@@ -79,28 +75,24 @@ class UNetAttnDp(nn.Module):
         d5 = torch.cat((x4, d5), dim=1)
 
         d5 = self.up_conv5(d5)
-        d5 = self.sse_5(d5)
 
         d4 = self.up4(d5)
         x3 = self.attn4(g=d4, x=x3)
         d4 = torch.cat((x3, d4), dim=1)
 
         d4 = self.up_conv4(d4)
-        d4 = self.sse_4(d4)
 
         d3 = self.up3(d4)
         x2 = self.attn3(g=d3, x=x2)
         d3 = torch.cat((x2, d3), dim=1)
 
         d3 = self.up_conv3(d3)
-        d3 = self.sse_3(d3)
 
         d2 = self.up2(d3)
         x1 = self.attn2(g=d2, x=x1)
         d2 = torch.cat((x1, d2), dim=1)
 
         d2 = self.up_conv2(d2)
-        d2 = self.sse_2(d2)
 
         d1 = self.conv_1x1(d2)
 
