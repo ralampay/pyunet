@@ -9,6 +9,21 @@ from lib.unet import UNet
 from lib.unet_attn import UNetAttn
 from lib.unet_attn_dp import UNetAttnDp
 
+def load_model_for_inference(in_channels, out_channels, model_type, device, state_dict):
+    model = initialize_model(
+        in_channels, 
+        out_channels, 
+        model_type, 
+        device
+    )
+
+    model.load_state_dict(state_dict)
+
+    # Turn off certain layers for inference
+    model.eval()
+
+    return model
+
 def initialize_model(in_channels, out_channels, model_type, device):
     model = None
 

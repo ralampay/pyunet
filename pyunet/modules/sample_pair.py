@@ -7,7 +7,7 @@ import random
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from utils import initialize_model
+from utils import load_model_for_inference
 
 class SamplePair:
     def __init__(self, params={}):
@@ -75,14 +75,13 @@ class SamplePair:
 
         print("Using model type: {}".format(self.model_type))
 
-        model = initialize_model(
+        model = load_model_for_inference(
             self.in_channels,
             self.out_channels,
             self.model_type,
-            self.device
+            self.device,
+            state['state_dict']
         )
-
-        model.load_state_dict(state['state_dict'])
 
         # Load image
         rows, cols, _ = img_for_plot.shape

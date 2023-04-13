@@ -50,8 +50,8 @@ class UNetAttnDp(nn.Module):
         self.attn2 = AttentionBlockDp(64, 64, 32)
         self.up_conv2 = DepthwiseSeperableConv(128, 64)
 
-        #self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
-        self.conv_1x1 = DepthwiseSeperableConv(64, out_channels)
+        self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
+        #self.conv_1x1 = DepthwiseSeperableConv(64, out_channels)
 
     def forward(self, x):
         # Encoding path

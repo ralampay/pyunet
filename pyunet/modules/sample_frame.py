@@ -5,7 +5,7 @@ import numpy as np
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.utils import initialize_model
+from lib.utils import load_model_for_inference
 
 class SampleFrame:
     def __init__(self, params):
@@ -72,14 +72,13 @@ class SampleFrame:
         print("In Channels: {}".format(self.in_channels))
         print("Out Channels: {}".format(self.out_channels))
 
-        model = initialize_model(
+        model = load_model_for_inference(
             self.in_channels,
             self.out_channels,
             self.model_type,
-            self.device
+            self.device,
+            state['state_dict']
         )
-
-        model.load_state_dict(state['state_dict'])
 
         print("Reading image {}...".format(self.input_img))
         img = cv2.imread(self.input_img)

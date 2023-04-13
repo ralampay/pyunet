@@ -7,7 +7,7 @@ import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from utils import initialize_model
+from utils import load_model_for_inference
 
 COLOR_RED = np.array([0, 0, 255], dtype='uint8')
 
@@ -59,14 +59,13 @@ class Monitor:
         print("In Channels: {}".format(self.in_channels))
         print("Out Channels: {}".format(self.out_channels))
 
-        model = initialize_model(
+        model = load_model_for_inference(
             self.in_channels,
             self.out_channels,
             self.model_type,
-            self.device
+            self.device,
+            state['state_dict']
         )
-
-        model.load_state_dict(state['state_dict'])
 
         cap = cv2.VideoCapture(self.video)
 
