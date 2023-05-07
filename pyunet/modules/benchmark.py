@@ -67,7 +67,6 @@ class Benchmark:
         ave_f1          = 0.0
         ave_precision   = 0.0
         ave_recall      = 0.0
-        ave_specificity = 0.0
         ave_jaccard     = 0.0
 
         start_time = time.time()
@@ -88,14 +87,12 @@ class Benchmark:
             f1          = f1_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1)
             precision   = precision_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1)
             recall      = recall_score(mask_vectorized, prediction_vectorized, average='macro', zero_division=1) # sensitivity
-            specificity = recall_score(mask_vectorized, prediction_vectorized, labels=range(self.out_channels), average='macro', zero_division=1)
             jaccard     = jaccard_score(mask_vectorized, prediction_vectorized, labels=range(self.out_channels), average='macro')
 
             ave_accuracy += accuracy
             ave_f1 += f1
             ave_precision += precision
             ave_recall += recall
-            ave_specificity += specificity
             ave_jaccard += jaccard
 
         end_time = time.time()
@@ -107,7 +104,6 @@ class Benchmark:
         ave_f1          = ave_f1 / num_images
         ave_precision   = ave_precision / num_images
         ave_recall      = ave_recall / num_images
-        ave_specificity = ave_specificity / num_images
         ave_jaccard     = ave_jaccard / num_images
 
         scores = [
@@ -118,7 +114,6 @@ class Benchmark:
                 'ave_f1':           ave_f1,
                 'ave_precision':    ave_precision,
                 'ave_recall':       ave_recall,
-                'ave_specificity':  ave_specificity,
                 'ave_jaccard':      ave_jaccard,
                 'elapsed_time':     elapsed_time
             }
