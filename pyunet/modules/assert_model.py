@@ -1,10 +1,12 @@
 import torch
+import sys
+import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.utils import initialize_model
 
 class AssertModel:
-    def __init__(self, params={})
+    def __init__(self, params={}):
         self.model_type     = params.get('model_type') or 'unet'
         self.in_channels    = params.get('in_channels') or 3
         self.out_channels   = params.get('out_channels') or 2
