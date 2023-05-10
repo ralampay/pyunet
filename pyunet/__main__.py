@@ -15,6 +15,7 @@ from .modules.generate_dataset import GenerateDataset
 from .modules.sample_frame import SampleFrame
 from .modules.extract_unique_gray import ExtractUniqueGray
 from .modules.benchmark import Benchmark
+from .modules.assert_model import AssertModel
 
 mode_choices = [
     "train",
@@ -27,7 +28,8 @@ mode_choices = [
     "benchmark",
     "generate-dataset",
     "sample-frame",
-    "extract-unique-gray"
+    "extract-unique-gray",
+    "assert-model"
 ]
 
 model_type_choices = [

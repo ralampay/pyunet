@@ -4,23 +4,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.utils import initialize_model
 
 class AssertModel:
-    def __init__(
-        self, 
-        model_type, 
-        in_channels, 
-        out_channels, 
-        img_width, 
-        img_height, 
-        device='cuda',
-        gpu_index=0
-    ):
-        self.model_type     = model_type
-        self.in_channels    = in_channels
-        self.out_channels   = out_channels
-        self.img_width      = img_width
-        self.img_height     = img_height
-        self.device         = cuda
-        self.gpu_index      = gpu_index
+    def __init__(self, params={})
+        self.model_type     = params.get('model_type') or 'unet'
+        self.in_channels    = params.get('in_channels') or 3
+        self.out_channels   = params.get('out_channels') or 2
+        self.img_width      = params.get('img_width') or 28
+        self.img_height     = params.get('img_height') or 28
+        self.device         = params.get('device') or 'cuda'
+        self.gpu_index      = params.get('gpu_index') or 0
 
     def execute(self):
         print(f"Asserting model {self.model_type}")
