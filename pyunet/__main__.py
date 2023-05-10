@@ -269,6 +269,20 @@ def main():
         cmd = ExportOnnx(params=params)
         cmd.execute()
 
+    elif mode == "assert-model":
+        params = {
+            'device':       device,
+            'gpu_index':    gpu_index,
+            'model_type':   model_type,
+            'img_width':    img_width,
+            'img_height':   img_height,
+            'in_channels':  in_channels,
+            'out_channels': out_channels
+        }
+
+        cmd = AssertModel(params=params)
+        cmd.execute()
+
     else:
         raise ValueError("Invalid mode {}".format(mode))
 
