@@ -30,30 +30,30 @@ class UNetAttnDp(nn.Module):
 #        self.conv5 = DepthwiseSeperableConv(512, 1024)
 
         self.conv1 = GhostDpConv(in_channels, 64)
-        self.conv2 = GhostDpConv(64, 128)
-        self.conv3 = GhostDpConv(128, 256)
-        self.conv4 = GhostDpConv(256, 512)
-        self.conv5 = GhostDpConv(512, 1024)
+        self.conv2 = GhostDpConv(64, 128, groups=8)
+        self.conv3 = GhostDpConv(128, 256, groups=8)
+        self.conv4 = GhostDpConv(256, 512, groups=8)
+        self.conv5 = GhostDpConv(512, 1024, groups=8)
 
         self.up5 = UpConv(1024, 512)
         self.attn5 = AttentionBlockDp(512, 512, 256)
 #        self.up_conv5 = DepthwiseSeperableConv(1024, 512)
-        self.up_conv5 = GhostDpConv(1024, 512)
+        self.up_conv5 = GhostDpConv(1024, 512, groups=8)
 
         self.up4 = UpConv(512, 256)
         self.attn4 = AttentionBlockDp(256, 256, 128)
 #        self.up_conv4 = DepthwiseSeperableConv(512, 256)
-        self.up_conv4 = GhostDpConv(512, 256)
+        self.up_conv4 = GhostDpConv(512, 256, groups=8)
 
         self.up3 = UpConv(256, 128)
         self.attn3 = AttentionBlockDp(128, 128, 64)
 #        self.up_conv3 = DepthwiseSeperableConv(256, 128)
-        self.up_conv3 = GhostDpConv(256, 128)
+        self.up_conv3 = GhostDpConv(256, 128, groups=8)
 
         self.up2 = UpConv(128, 64)
         self.attn2 = AttentionBlockDp(64, 64, 32)
 #        self.up_conv2 = DepthwiseSeperableConv(128, 64)
-        self.up_conv2 = GhostDpConv(128, 64)
+        self.up_conv2 = GhostDpConv(128, 64, groups=8)
 
         #self.conv_1x1 = nn.Conv2d(64, out_channels, kernel_size=1, stride=1, padding=0)
 #        self.conv_1x1 = DepthwiseSeperableConv(64, out_channels)
