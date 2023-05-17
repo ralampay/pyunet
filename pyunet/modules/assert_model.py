@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.utils import initialize_model
+from lib.utils import initialize_model, count_parameters
 
 class AssertModel:
     def __init__(self, params={}):
@@ -43,5 +43,9 @@ class AssertModel:
         result = self.model(tensors)
 
         print(result.shape)
+
+        num_parameters = count_parameters(self.model)
+
+        print(f"Number of parameters: {num_parameters}")
 
         print("Done")
