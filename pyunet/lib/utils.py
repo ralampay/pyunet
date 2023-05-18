@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.unet import UNet
 from lib.unet_attn import UNetAttn
 from lib.unet_attn_dp import UNetAttnDp
+from lib.unet_attn_ghost_dp import UNetAttnGhostDp
 
 def load_model_for_inference(in_channels, out_channels, model_type, device, state_dict):
     model = initialize_model(
@@ -36,6 +37,11 @@ def initialize_model(in_channels, out_channels, model_type, device):
         ).to(device)
     elif model_type == 'unet_attn_dp':
         model = UNetAttnDp(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_attn_ghost_dp':
+        model = UNetAttnGhostDp(
             in_channels=in_channels,
             out_channels=out_channels
         ).to(device)
