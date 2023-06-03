@@ -52,7 +52,7 @@ class Rgb2Mask:
                     if colors[i] == [r, g, b]:
                         self.result[y, x] = i
 
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(8, 4))
         plt.subplot(121)
         plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         plt.title('Image')

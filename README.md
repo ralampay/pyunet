@@ -148,3 +148,11 @@ Runs pyunet from camera feed.
 ```
 python -m  pyunet --mode monitor --img-height 256 --img-width 256 --display-width 800 --display-height 640 --video 0 --model-file ./model.pth --model-type unet_attn_dp
 ```
+
+### RGB 2 Mask Converter
+
+Translates an RGB image to its mask version for training.
+
+```
+python -m pyunet --mode rgb2mask --config-file samples/bhuvan_satellite_dataset.json --image-file samples/bhuvan_satellite_image.png
+```
