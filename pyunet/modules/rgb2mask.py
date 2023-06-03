@@ -5,6 +5,9 @@ import cv2
 import time
 import numpy as np
 import json
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -22,20 +25,39 @@ class Rgb2Mask:
         self.labels = self.config["labels"]
 
     def execute(self):
+        print(f"Dimension: {self.dim}")
         # Display labels
+        colors = []
         print(f"Dataset: {self.config['title']}")
         for label in self.labels:
             print(f"Name: {label['name']} Color: ({label['color'][0]}, {label['color'][1]} {label['color'][2]})")
+            colors.append(label['color'])
+
+        print("Colors:")
+        print(colors)
 
         image = cv2.imread(self.image_file)
-        image = cv2.resize(image, self.dim)
 
         rows, cols, _ = image.shape
 
         original_dim = (cols, rows)
 
-        result = image
+        self.result = np.zeros((rows, cols))
 
-        cv2.imshow("result", cv2.resize(result, original_dim))
-        cv2.waitKey(0) 
-        cv2.destroyAllWindows() 
+        for y in range(0, rows):
+            for x in range(0, cols):
+                b, g, r = (image[y, x])
+
+                for i in range(len(colors)):
+                    if colors[i] == [r, g, b]:
+                        self.result[y, x] = i
+
+        plt.figure(figsize=(12, 8))
+        plt.subplot(121)
+        plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        plt.title('Image')
+        plt.subplot(122)
+        plt.imshow(self.result, cmap='gray')
+        plt.title('Mask')
+
+        plt.show()
