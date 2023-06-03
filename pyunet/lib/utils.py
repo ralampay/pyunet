@@ -10,6 +10,21 @@ from lib.unet_attn import UNetAttn
 from lib.unet_attn_dp import UNetAttnDp
 from lib.unet_attn_ghost_dp import UNetAttnGhostDp
 
+def rgb2mask(colors, image):
+    rows, cols, _ = image.shape
+
+    result = np.zeros((rows, cols))
+
+    for y in range(0, rows):
+        for x in range(0, cols):
+            b, g, r = (image[y, x])
+
+            for i in range(len(colors)):
+                if colors[i] == [r, g, b]:
+                    result[y, x] = i
+
+    return result
+
 def load_model_for_inference(in_channels, out_channels, model_type, device, state_dict):
     model = initialize_model(
         in_channels, 

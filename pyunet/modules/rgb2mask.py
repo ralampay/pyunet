@@ -10,6 +10,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from lib.utils import rgb2mask
 
 class Rgb2Mask:
     def __init__(self, params={}):
@@ -36,25 +37,12 @@ class Rgb2Mask:
         print("Colors:")
         print(colors)
 
-        image = cv2.imread(self.image_file)
-
-        rows, cols, _ = image.shape
-
-        original_dim = (cols, rows)
-
-        self.result = np.zeros((rows, cols))
-
-        for y in range(0, rows):
-            for x in range(0, cols):
-                b, g, r = (image[y, x])
-
-                for i in range(len(colors)):
-                    if colors[i] == [r, g, b]:
-                        self.result[y, x] = i
+        self.image  = cv2.imread(self.image_file)
+        self.result = rgb2mask(colors, self.image)
 
         plt.figure(figsize=(8, 4))
         plt.subplot(121)
-        plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        plt.imshow(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
         plt.title('Image')
         plt.subplot(122)
         plt.imshow(self.result, cmap='gray')
