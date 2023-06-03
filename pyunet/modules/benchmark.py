@@ -56,6 +56,8 @@ class Benchmark:
         self.model.load_state_dict(state['state_dict'])
         self.model.optimizer = state['optimizer']
 
+        self.model.eval()
+
         test_images = sorted(glob.glob("{}/*".format(self.input_img_dir)))
         test_masks  = sorted(glob.glob("{}/*".format(self.input_mask_dir)))
 

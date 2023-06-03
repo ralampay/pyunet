@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
 from depthwise_seperable_conv import DepthwiseSeperableConv
+from double_conv import DoubleConv
 
 class GhostDpConv(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=2, dilation=2, groups=3, ratio=0.5):
         super(GhostDpConv, self).__init__()
 
-        self.primary_conv = nn.Conv2d(
+        self.primary_conv = DoubleConv(
             in_channels,
             int(out_channels * ratio),
             kernel_size,
