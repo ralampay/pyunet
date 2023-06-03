@@ -36,6 +36,8 @@ class Benchmark:
         print("Input Image Dir: {}".format(self.input_img_dir))
         print("Input Mask Dir:{}".format(self.input_mask_dir))
         print("Model Type: {}".format(self.model_type))
+        print("In Channels: {}".format(self.in_channels))
+        print("Out Channels: {}".format(self.out_channels))
 
         if self.device == 'cuda':
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))

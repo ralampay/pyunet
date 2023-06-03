@@ -24,12 +24,15 @@ class SamplePair:
         self.gpu_index  = params.get('gpu_index') or 0
         self.model_type = params.get('model_type') or 'unet'
 
-        self.in_channels    = params.get('in_channels') or 3
-        self.out_channels   = params.get('out_channels') or 2
+        self.in_channels    = params.get('in_channels')
+        self.out_channels   = params.get('out_channels')
 
         self.sampled_index = params.get('sampled_index') or -1
 
     def execute(self):
+        print("In Channels: {}".format(self.in_channels))
+        print("Out Channels: {}".format(self.out_channels))
+
         print("Sampling pair...")
 
         print("input_img_dir: {}".format(self.input_img_dir))
