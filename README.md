@@ -156,3 +156,7 @@ Translates an RGB image to its mask version for training.
 ```
 python -m pyunet --mode rgb2mask --config-file samples/bhuvan_satellite_dataset.json --image-file samples/bhuvan_satellite_image.png
 ```
+
+## Semantic Segmentation Datasets
+
+* [Bhuvan Satellite Image Dataset](https://www.kaggle.com/datasets/khushiipatni/satellite-image-and-mask)
