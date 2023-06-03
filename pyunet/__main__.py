@@ -16,6 +16,7 @@ from .modules.sample_frame import SampleFrame
 from .modules.extract_unique_gray import ExtractUniqueGray
 from .modules.benchmark import Benchmark
 from .modules.assert_model import AssertModel
+from .modules.rgb2mask import Rgb2Mask
 
 mode_choices = [
     "train",
@@ -29,7 +30,8 @@ mode_choices = [
     "generate-dataset",
     "sample-frame",
     "extract-unique-gray",
-    "assert-model"
+    "assert-model",
+    "rgb2mask"
 ]
 
 model_type_choices = [
@@ -72,6 +74,8 @@ def main():
     parser.add_argument("--test-mask-dir", help="Test mask dir", type=str, default="test/masks")
     parser.add_argument("--sampled-index", help="Sampled index", type=int, default=-1)
     parser.add_argument("--export-file", help="Export file", type=str, default='model.onnx')
+    parser.add_argument("--image-file", help="Image file", type=str, default="img.png")
+    parser.add_argument("--config-file", help="Config file", type=str, default="config.json")
 
     args = parser.parse_args()
 
@@ -103,6 +107,8 @@ def main():
     test_mask_dir   = args.test_mask_dir
     sampled_index   = args.sampled_index
     export_file     = args.export_file
+    image_file      = args.image_file
+    config_file     = args.config_file
 
     if mode =="train":
         params = {
@@ -282,6 +288,17 @@ def main():
         }
 
         cmd = AssertModel(params=params)
+        cmd.execute()
+    
+    elif mode == "rgb2mask":
+        params = {
+            'img_width':    img_width,
+            'img_height':   img_height,
+            'config_file':  config_file,
+            'image_file':   image_file
+        }
+
+        cmd = Rgb2Mask(params=params)
         cmd.execute()
 
     else:

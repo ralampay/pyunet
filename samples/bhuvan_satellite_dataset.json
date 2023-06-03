@@ -1,0 +1,10 @@
+{
+  "title": "Bhuvan Satellite Dataset",
+  "labels": [
+    { "name": "urban", "color": [0, 255, 255] },
+    { "name": "water", "color": [0, 0, 255] },
+    { "name": "forest", "color": [0, 255, 0] },
+    { "name": "agriculture", "color": [255, 255, 0] },
+    { "name": "road", "color": [255, 0, 255] }
+  ]
+}
