@@ -19,7 +19,7 @@ class GhostConv(nn.Module):
             bias=False
         )
 
-        self.cheap_conv = DoubleConv(
+        self.cheap_conv = DepthwiseSeperableConv(
             in_channels,
             out_channels - int(out_channels * ratio)
         )
