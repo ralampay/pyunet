@@ -9,6 +9,7 @@ from lib.unet import UNet
 from lib.unet_attn import UNetAttn
 from lib.unet_attn_dp import UNetAttnDp
 from lib.unet_attn_ghost_dp import UNetAttnGhostDp
+from lib.unet_attn_ghost import UNetAttnGhost
 
 def rgb2mask(colors, image):
     rows, cols, _ = image.shape
@@ -57,6 +58,11 @@ def initialize_model(in_channels, out_channels, model_type, device):
         ).to(device)
     elif model_type == 'unet_attn_ghost_dp':
         model = UNetAttnGhostDp(
+            in_channels=in_channels,
+            out_channels=out_channels
+        ).to(device)
+    elif model_type == 'unet_attn_ghost':
+        model = UNetAttnGhost(
             in_channels=in_channels,
             out_channels=out_channels
         ).to(device)

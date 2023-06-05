@@ -4,9 +4,9 @@ from depthwise_seperable_conv import DepthwiseSeperableConv
 from double_conv import DoubleConv
 from attention_conv_2d import AttentionConv2d
 
-class GhostDpConv(nn.Module):
+class GhostConv(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=2, dilation=2, groups=3, ratio=0.5):
-        super(GhostDpConv, self).__init__()
+        super(GhostConv, self).__init__()
 
         self.primary_conv = DoubleConv(
             in_channels,
@@ -19,7 +19,7 @@ class GhostDpConv(nn.Module):
             bias=False
         )
 
-        self.cheap_conv = DepthwiseSeperableConv(
+        self.cheap_conv = DoubleConv(
             in_channels,
             out_channels - int(out_channels * ratio)
         )
