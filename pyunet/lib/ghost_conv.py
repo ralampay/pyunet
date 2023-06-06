@@ -6,7 +6,7 @@ from attention_conv_2d import AttentionConv2d
 from inverted_residual_block import InvertedResidualBlock
 
 class GhostConv(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, dilation=1, groups=1, ratio=0.5):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, dilation=1, groups=4, ratio=0.5):
         super(GhostConv, self).__init__()
 
         self.primary_conv = DoubleConv(

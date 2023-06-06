@@ -9,6 +9,8 @@ from double_conv import DoubleConv
 from attention_block import AttentionBlock
 from ghost_conv import GhostConv
 from up_conv import UpConv
+from up_conv_ghost import UpConvGhost
+from torchcrf import CRF
 
 class UNetAttnGhost(nn.Module):
     def __init__(
@@ -29,19 +31,19 @@ class UNetAttnGhost(nn.Module):
         self.conv4 = GhostConv(256, 512)
         self.conv5 = GhostConv(512, 1024)
 
-        self.up5 = UpConv(1024, 512)
+        self.up5 = UpConvGhost(1024, 512)
         self.attn5 = AttentionBlock(512, 512, 256)
         self.up_conv5 = GhostConv(1024, 512)
 
-        self.up4 = UpConv(512, 256)
+        self.up4 = UpConvGhost(512, 256)
         self.attn4 = AttentionBlock(256, 256, 128)
         self.up_conv4 = GhostConv(512, 256)
 
-        self.up3 = UpConv(256, 128)
+        self.up3 = UpConvGhost(256, 128)
         self.attn3 = AttentionBlock(128, 128, 64)
         self.up_conv3 = GhostConv(256, 128)
 
-        self.up2 = UpConv(128, 64)
+        self.up2 = UpConvGhost(128, 64)
         self.attn2 = AttentionBlock(64, 64, 32)
         self.up_conv2 = GhostConv(128, 64)
 
