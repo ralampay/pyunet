@@ -23,29 +23,29 @@ class UNetAttnGhost(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.conv1 = GhostConv(in_channels, 64, groups=in_channels)
-        self.conv2 = GhostConv(64, 128, groups=128*alpha)
-        self.conv3 = GhostConv(128, 256, groups=256*alpha)
-        self.conv4 = GhostConv(256, 512, groups=512*alpha)
-        self.conv5 = GhostConv(512, 1024, groups=1024*alpha)
+        self.conv1 = GhostConv(in_channels, 64)
+        self.conv2 = GhostConv(64, 128)
+        self.conv3 = GhostConv(128, 256)
+        self.conv4 = GhostConv(256, 512)
+        self.conv5 = GhostConv(512, 1024)
 
         self.up5 = UpConv(1024, 512)
         self.attn5 = AttentionBlock(512, 512, 256)
-        self.up_conv5 = GhostConv(1024, 512, groups=512*alpha)
+        self.up_conv5 = GhostConv(1024, 512)
 
         self.up4 = UpConv(512, 256)
         self.attn4 = AttentionBlock(256, 256, 128)
-        self.up_conv4 = GhostConv(512, 256, groups=256*alpha)
+        self.up_conv4 = GhostConv(512, 256)
 
         self.up3 = UpConv(256, 128)
         self.attn3 = AttentionBlock(128, 128, 64)
-        self.up_conv3 = GhostConv(256, 128, groups=128*alpha)
+        self.up_conv3 = GhostConv(256, 128)
 
         self.up2 = UpConv(128, 64)
         self.attn2 = AttentionBlock(64, 64, 32)
-        self.up_conv2 = GhostConv(128, 64, groups=64*alpha)
+        self.up_conv2 = GhostConv(128, 64)
 
-        self.conv_1x1 = GhostConv(64, out_channels, groups=out_channels*alpha)
+        self.conv_1x1 = GhostConv(64, out_channels)
 
     def forward(self, x):
         # Encoding path
