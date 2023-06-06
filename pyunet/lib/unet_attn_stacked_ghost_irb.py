@@ -25,26 +25,26 @@ class UNetAttnStackedGhostIrb(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
 
         self.conv1 = nn.Sequential(GhostConv(in_channels, 64), InvertedResidualBlock(64, 64))
-        self.conv2 = nn.Sequential(GhostConv(64, 128, groups=64//2), InvertedResidualBlock(128, 128))
-        self.conv3 = nn.Sequential(GhostConv(128, 256, groups=128//2), InvertedResidualBlock(256, 256))
-        self.conv4 = nn.Sequential(GhostConv(256, 512, groups=256//2), InvertedResidualBlock(512, 512))
-        self.conv5 = nn.Sequential(GhostConv(512, 1024, groups=512//2), InvertedResidualBlock(1024, 1024))
+        self.conv2 = nn.Sequential(GhostConv(64, 128, groups=64), InvertedResidualBlock(128, 128))
+        self.conv3 = nn.Sequential(GhostConv(128, 256, groups=128), InvertedResidualBlock(256, 256))
+        self.conv4 = nn.Sequential(GhostConv(256, 512, groups=256), InvertedResidualBlock(512, 512))
+        self.conv5 = nn.Sequential(GhostConv(512, 1024, groups=512), InvertedResidualBlock(1024, 1024))
 
-        self.up5 = UpConvStackedGhostIrb(1024, 512, groups=256//2)
+        self.up5 = UpConvStackedGhostIrb(1024, 512, groups=256)
         self.attn5 = AttentionBlock(512, 512, 256)
-        self.up_conv5 = nn.Sequential(GhostConv(1024, 512, groups=256//2), InvertedResidualBlock(512, 512))
+        self.up_conv5 = nn.Sequential(GhostConv(1024, 512, groups=256), InvertedResidualBlock(512, 512))
 
-        self.up4 = UpConvStackedGhostIrb(512, 256, groups=128//2)
+        self.up4 = UpConvStackedGhostIrb(512, 256, groups=128)
         self.attn4 = AttentionBlock(256, 256, 128)
-        self.up_conv4 = nn.Sequential(GhostConv(512, 256, groups=128//2), InvertedResidualBlock(256, 256))
+        self.up_conv4 = nn.Sequential(GhostConv(512, 256, groups=128), InvertedResidualBlock(256, 256))
 
-        self.up3 = UpConvStackedGhostIrb(256, 128, groups=64//2)
+        self.up3 = UpConvStackedGhostIrb(256, 128, groups=64)
         self.attn3 = AttentionBlock(128, 128, 64)
-        self.up_conv3 = nn.Sequential(GhostConv(256, 128, groups=64//2), InvertedResidualBlock(128, 128))
+        self.up_conv3 = nn.Sequential(GhostConv(256, 128, groups=64), InvertedResidualBlock(128, 128))
 
-        self.up2 = UpConvStackedGhostIrb(128, 64, groups=32//2)
+        self.up2 = UpConvStackedGhostIrb(128, 64, groups=32)
         self.attn2 = AttentionBlock(64, 64, 32)
-        self.up_conv2 = nn.Sequential(GhostConv(128, 64, groups=32//2), InvertedResidualBlock(64, 64))
+        self.up_conv2 = nn.Sequential(GhostConv(128, 64, groups=32), InvertedResidualBlock(64, 64))
 
         self.conv_1x1 = nn.Sequential(GhostConv(64, out_channels), InvertedResidualBlock(out_channels, out_channels))
 
