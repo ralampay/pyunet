@@ -10,7 +10,6 @@ from attention_block import AttentionBlock
 from ghost_conv import GhostConv
 from up_conv import UpConv
 from up_conv_ghost import UpConvGhost
-from torchcrf import CRF
 
 class UNetAttnGhost(nn.Module):
     def __init__(
