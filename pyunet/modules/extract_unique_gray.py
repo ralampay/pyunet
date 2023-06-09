@@ -43,8 +43,3 @@ class ExtractUniqueGray:
 
         print("Unique Grayscale Values:")
         print(self.grayscale_values)
-
-        print("Hex Values:")
-        for val in self.grayscale_values:
-            hex_value = grayscale_to_hex(val)
-            print("{}: {}".format(val, hex_value))

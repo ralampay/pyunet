@@ -1,0 +1,8 @@
+{
+  "title": "KITTI Road Segmentation",
+  "labels": [
+    { "name": "others", "color": [0, 0, 0] },
+    { "name": "road", "color": [0, 0, 255] },
+    { "name": "background", "color": [0, 255, 0] }
+  ]
+}
