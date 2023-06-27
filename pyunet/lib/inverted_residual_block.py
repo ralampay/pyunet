@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class InvertedResidualBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, expansion_factor=6, stride=1):
+    def __init__(self, in_channels, out_channels, expansion_factor=3, stride=1):
         super(InvertedResidualBlock, self).__init__()
         
         self.expanded_channels = in_channels * expansion_factor

@@ -1,0 +1,25 @@
+DIR=/home/ralampay/workspace/pyunet/
+
+cd $DIR
+
+source env/bin/activate
+
+# Parameters
+DEVICE=cuda
+GPU_INDEX=0
+IMG_WIDTH=128
+IMG_HEIGHT=128
+MODEL_TYPE=unet_attn_stacked_ghost_irb
+#MODEL_TYPE=unet_attn
+IN_CHANNELS=3
+OUT_CHANNELS=2
+
+python -m pyunet \
+  --mode assert-model \
+  --device $DEVICE \
+  --gpu-index $GPU_INDEX \
+  --img-width $IMG_WIDTH \
+  --img-height $IMG_HEIGHT \
+  --in-channels $IN_CHANNELS \
+  --out-channels $OUT_CHANNELS \
+  --model-type $MODEL_TYPE
