@@ -158,7 +158,7 @@ def main():
             'device':           device,
             'in_channels':      in_channels,
             'out_channels':     out_channels,
-            'display_hidth':    display_width,
+            'display_width':    display_width,
             'display_height':   display_height,
             'model_type':       model_type
         }

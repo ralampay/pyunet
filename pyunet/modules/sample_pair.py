@@ -46,6 +46,8 @@ class SamplePair:
         if self.sampled_index < 0:
             self.sampled_index = random.randint(0, num_images - 1)
 
+        print(f"sampled_index: {self.sampled_index}")
+
         img_path    = os.path.join(self.input_img_dir, img_list[self.sampled_index])
         mask_path   = os.path.join(self.input_mask_dir, msk_list[self.sampled_index])
 
