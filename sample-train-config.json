@@ -1,0 +1,17 @@
+{
+  "img_width": 128,
+  "img_height": 128,
+  "batch_size": 2,
+  "epochs": 100,
+  "learning_rate": 0.0001,
+  "in_channels": 3,
+  "out_channels": 2,
+  "loss_type": "FL",
+  "model_type": "unet_attn_stacked_ghost_irb",
+  "device": "cuda",
+  "gpu_index": 0,
+  "cont": false,
+  "input_img_dir": "/home/ralampay/Projects/UNetAttnDPSegmentation/benchmarks/ebhi-seg-polyp-128-01/train/images",
+  "input_mask_dir": "/home/ralampay/Projects/UNetAttnDPSegmentation/benchmarks/ebhi-seg-polyp-128-01/train/masks",
+  "model_file": "/home/ralampay/Projects/UNetAttnDPSegmentation/benchmarks/ebhi-seg-polyp-128-01/unet_attn_stacked_ghost_irb.pth"
+}

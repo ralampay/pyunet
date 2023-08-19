@@ -1,22 +1,27 @@
 import sys
 import argparse
 import os
-import torch
 import datetime
+import os.path
+import sys
+import json
+sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-from .modules.train import Train
-from .modules.forward import Forward
-from .modules.monitor import Monitor
-from .modules.monitor_onnx import MonitorOnnx
-from .modules.export_onnx import ExportOnnx
-from .modules.generate_tiff import GenerateTiff
-from .modules.sample_pair import SamplePair
-from .modules.generate_dataset import GenerateDataset
-from .modules.sample_frame import SampleFrame
-from .modules.extract_unique_gray import ExtractUniqueGray
-from .modules.benchmark import Benchmark
-from .modules.assert_model import AssertModel
-from .modules.rgb2mask import Rgb2Mask
+from modules.train import Train
+from modules.forward import Forward
+from modules.monitor import Monitor
+from modules.monitor_onnx import MonitorOnnx
+from modules.export_onnx import ExportOnnx
+from modules.generate_tiff import GenerateTiff
+from modules.sample_pair import SamplePair
+from modules.generate_dataset import GenerateDataset
+from modules.sample_frame import SampleFrame
+from modules.extract_unique_gray import ExtractUniqueGray
+from modules.benchmark import Benchmark
+from modules.assert_model import AssertModel
+from modules.rgb2mask import Rgb2Mask
+
+from lib.helpers.extract_params_from_config import ExtractParamsFromConfig
 
 mode_choices = [
     "train",
@@ -77,7 +82,7 @@ def main():
     parser.add_argument("--sampled-index", help="Sampled index", type=int, default=-1)
     parser.add_argument("--export-file", help="Export file", type=str, default='model.onnx')
     parser.add_argument("--image-file", help="Image file", type=str, default="img.png")
-    parser.add_argument("--config-file", help="Config file", type=str, default="config.json")
+    parser.add_argument("--config-file", help="Config file", type=str, default="")
 
     args = parser.parse_args()
 
@@ -130,6 +135,10 @@ def main():
             'loss_type':        loss_type,
             'model_type':       model_type
         }
+
+        if config_file:
+            with open(config_file) as json_file:
+                params = json.load(json_file)
 
         cmd = Train(params=params)
         cmd.execute()
