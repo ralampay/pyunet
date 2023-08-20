@@ -207,6 +207,10 @@ def main():
             'in_channels':      in_channels,
             'out_channels':     out_channels
         }
+
+        if config_file:
+            with open(config_file) as json_file:
+                params = json.load(json_file)
         
         cmd = SamplePair(params=params)
         cmd.execute()
