@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-def depth_loss(predictions, depthmap, weight_loss_pointwise = 0.1, weight_loss_gradients = 0.1, weight_loss_ssm = 0.1):
+def depth_loss(predictions, depthmap, weight=0.1):
     # Compute pointwise loss
     loss_pointwise = nn.MSELoss()(predictions, depthmap)
 
@@ -34,7 +34,7 @@ def depth_loss(predictions, depthmap, weight_loss_pointwise = 0.1, weight_loss_g
     # Compute structural loss
     loss_ssm = (1 - nn.MSELoss()(predictions, depthmap)) / 2
 
-    return (weight_loss_pointwise * loss_pointwise) + (weight_loss_gradients * loss_gradients) + (weight_loss_ssm * loss_ssm)
+    return (weight * loss_pointwise) + loss_gradients + loss_ssm
 
 # Source: https://github.com/gokulprasadthekkel/pytorch-multi-class-focal-loss/blob/master/focal_loss.py
 class FocalLoss(nn.modules.loss._WeightedLoss):

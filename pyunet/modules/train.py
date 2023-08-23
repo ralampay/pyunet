@@ -96,6 +96,8 @@ class Train:
             loss_fn = FocalLoss()
         elif self.loss_type == 'DP':
             loss_fn = depth_loss
+        elif self.loss_type == 'MSE':
+            loss_fn = nn.MSELoss()
         else:
             raise ValueError("Unsupported loss_type {}".format(self.loss_type))
 
