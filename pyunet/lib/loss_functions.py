@@ -2,6 +2,39 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
+def depth_loss(predictions, depthmap, weight_loss_pointwise = 0.1, weight_loss_gradients = 0.1, weight_loss_ssm = 0.1):
+    # Compute pointwise loss
+    loss_pointwise = nn.MSELoss()(predictions, depthmap)
+
+    # Compute l1 loss gradients over image gradient
+    loss_gradients = 0.
+
+    # Define convolutional filters for gradient calculation
+    gradient_x_filter = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
+    gradient_y_filter = torch.tensor([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=torch.float).unsqueeze(0).unsqueeze(0)
+
+    # Expand the filters for each channel
+    gradient_x_filters = gradient_x_filter.repeat(1, depthmap.shape[1], 1, 1).to(predictions.device)
+    gradient_y_filters = gradient_y_filter.repeat(1, depthmap.shape[1], 1, 1).to(predictions.device)
+
+    # Compute the horizontal and vertical gradients for both images
+    gradient_x1 = F.conv2d(predictions, gradient_x_filters, padding=1)
+    gradient_y1 = F.conv2d(predictions, gradient_y_filters, padding=1)
+    gradient_x2 = F.conv2d(depthmap, gradient_x_filters, padding=1)
+    gradient_y2 = F.conv2d(depthmap, gradient_y_filters, padding=1)
+
+    # Calculate the absolute difference between the gradient tensors
+    gradient_diff_x = torch.abs(gradient_x1 - gradient_x2)
+    gradient_diff_y = torch.abs(gradient_y1 - gradient_y2)
+
+    # Calculate the L1 loss of the gradient differences
+    loss_gradients = torch.norm(gradient_diff_x, p=1) + torch.norm(gradient_diff_y, p=1)
+    loss_gradients = loss_gradients / (depthmap.shape[2] * depthmap.shape[3])
+
+    # Compute structural loss
+    loss_ssm = (1 - nn.MSELoss()(predictions, depthmap)) / 2
+
+    return (weight_loss_pointwise * loss_pointwise) + (weight_loss_gradients * loss_gradients) + (weight_loss_ssm * loss_ssm)
 
 # Source: https://github.com/gokulprasadthekkel/pytorch-multi-class-focal-loss/blob/master/focal_loss.py
 class FocalLoss(nn.modules.loss._WeightedLoss):

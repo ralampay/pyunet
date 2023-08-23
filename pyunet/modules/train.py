@@ -19,7 +19,7 @@ from sklearn.metrics import recall_score
 from torch.utils.tensorboard import SummaryWriter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.loss_functions import dice_loss, tversky_loss, FocalLoss, sym_unified_focal_loss
+from lib.loss_functions import depth_loss, dice_loss, tversky_loss, FocalLoss, sym_unified_focal_loss
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score, initialize_model
 
 class Train:
@@ -94,6 +94,8 @@ class Train:
             loss_fn = tversky_loss
         elif self.loss_type == 'FL':
             loss_fn = FocalLoss()
+        elif self.loss_type == 'DP':
+            loss_fn = depth_loss
         else:
             raise ValueError("Unsupported loss_type {}".format(self.loss_type))
 
@@ -106,7 +108,8 @@ class Train:
             image_dir=self.input_img_dir,
             mask_dir=self.input_mask_dir,
             img_width=self.img_width,
-            img_height=self.img_height
+            img_height=self.img_height,
+            num_classes=self.out_channels
         )
 
         train_loader = DataLoader(
@@ -171,10 +174,11 @@ class Train:
 
         for batch_idx, (data, targets) in enumerate(loop):
             data    = data.to(device=self.device)
-            targets = targets.long().to(device=self.device)
+            targets = targets.float().to(device=self.device)
 
             # Forward
             predictions = model.forward(data)
+            #predictions = torch.argmax(predictions, dim=1).float()
 
             loss = loss_fn(predictions, targets)
             #loss = self.dice_loss(predictions, targets)
@@ -251,13 +255,14 @@ class Train:
         
 
 class CustomDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, img_width, img_height):
+    def __init__(self, image_dir, mask_dir, img_width, img_height, num_classes):
         self.image_dir      = image_dir
         self.mask_dir       = mask_dir 
         self.img_width      = img_width
         self.img_height     = img_height
         self.images         = sorted(os.listdir(image_dir))
         self.images_masked  = sorted(os.listdir(mask_dir))
+        self.num_classes    = num_classes
 
         self.dim = (img_width, img_height)
 
@@ -274,4 +279,13 @@ class CustomDataset(Dataset):
         original_img    = (cv2.resize(img, self.dim) / 255).transpose((2, 0, 1))
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))
 
-        return torch.Tensor(original_img), torch.Tensor(masked_img)
+        x = torch.Tensor(original_img)
+
+        y = torch.zeros(1, self.num_classes, self.img_height, self.img_width)
+
+        grayscale_tensor = torch.Tensor(masked_img)
+        for class_label in range(self.num_classes):
+            mask = (grayscale_tensor == class_label).float()
+            y[0, class_label, :,:] = mask
+
+        return x, y[0]
