@@ -4,7 +4,7 @@ from torch.nn import functional as F
 
 def depth_loss(predictions, depthmap, weight=0.1):
     # Compute pointwise loss
-    loss_pointwise = nn.MSELoss()(predictions, depthmap)
+    loss_pointwise = nn.CrossEntropyLoss()(predictions, depthmap)
 
     # Compute l1 loss gradients over image gradient
     loss_gradients = 0.
@@ -32,7 +32,7 @@ def depth_loss(predictions, depthmap, weight=0.1):
     loss_gradients = loss_gradients / (depthmap.shape[2] * depthmap.shape[3])
 
     # Compute structural loss
-    loss_ssm = (1 - nn.MSELoss()(predictions, depthmap)) / 2
+    loss_ssm = (1 - nn.CrossEntropyLoss()(predictions, depthmap)) / 2
 
     return (weight * loss_pointwise) + loss_gradients + loss_ssm
 
