@@ -47,6 +47,7 @@ class UNetAttnStackedGhostIrb(nn.Module):
         self.up_conv2 = nn.Sequential(GhostConv(128, 64, groups=32), InvertedResidualBlock(64, 64))
 
         self.conv_1x1 = nn.Sequential(GhostConv(64, out_channels), InvertedResidualBlock(out_channels, out_channels))
+        
 
     def forward(self, x):
         # Encoding path

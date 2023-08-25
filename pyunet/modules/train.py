@@ -180,10 +180,16 @@ class Train:
 
             # Forward
             predictions = model.forward(data)
-            #predictions = torch.argmax(predictions, dim=1).float()
+
+            print("Shape predictions: ", predictions.shape)
+            print("Shape targets: ", targets.shape)
+
+#            print("Predictions")
+#            print(predictions)
+#            print("Targets")
+#            print(targets)
 
             loss = loss_fn(predictions, targets)
-            #loss = self.dice_loss(predictions, targets)
 
             # Backward
             optimizer.zero_grad()
@@ -282,12 +288,6 @@ class CustomDataset(Dataset):
         masked_img      = (cv2.resize(cv2.imread(mask_path, 0), self.dim))
 
         x = torch.Tensor(original_img)
+        y = torch.Tensor(masked_img)
 
-        y = torch.zeros(1, self.num_classes, self.img_height, self.img_width)
-
-        grayscale_tensor = torch.Tensor(masked_img)
-        for class_label in range(self.num_classes):
-            mask = (grayscale_tensor == class_label).float()
-            y[0, class_label, :,:] = mask
-
-        return x, y[0]
+        return x, y
