@@ -175,19 +175,11 @@ class Train:
         count = 0
 
         for batch_idx, (data, targets) in enumerate(loop):
-            data    = data.to(device=self.device)
-            targets = targets.float().to(device=self.device)
+            data    = data.float().to(device=self.device)
+            targets = targets.long().to(device=self.device)
 
             # Forward
             predictions = model.forward(data)
-
-            print("Shape predictions: ", predictions.shape)
-            print("Shape targets: ", targets.shape)
-
-#            print("Predictions")
-#            print(predictions)
-#            print("Targets")
-#            print(targets)
 
             loss = loss_fn(predictions, targets)
 
