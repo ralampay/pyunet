@@ -68,7 +68,7 @@ class SamplePair:
         num_models  = len(self.models)
         num_cols    = num_models + 3
 
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(18, 4))
         plt.subplot(int(f"1{num_cols}1"))
         plt.imshow(img_for_plot)
         plt.title('Image')
