@@ -247,18 +247,8 @@ def main():
         cmd.execute()
 
     elif mode == "benchmark":
-        params = {
-            'img_width':        img_width,
-            'img_height':       img_height,
-            'device':           device,
-            'gpu_index':        gpu_index,
-            'input_img_dir':    input_img_dir,
-            'input_mask_dir':   input_mask_dir,
-            'model_file':       model_file,
-            'model_type':       model_type,
-            'in_channels':      in_channels,
-            'out_channels':     out_channels,
-        }
+        with open(config_file) as json_file:
+            params = json.load(json_file)
 
         cmd = Benchmark(params=params)
         cmd.execute()
