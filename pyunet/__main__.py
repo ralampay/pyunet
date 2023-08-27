@@ -193,24 +193,10 @@ def main():
         cmd = MonitorOnnx(params=params)
         cmd.execute()
 
+    # Exclusively run mode with json config
     elif mode == "sample-pair":
-        params = {
-            'img_width':        img_width,
-            'img_height':       img_height,
-            'input_img_dir':    input_img_dir,
-            'input_mask_dir':   input_mask_dir,
-            'model_file':       model_file,
-            'model_type':       model_type,
-            'device':           device,
-            'gpu_index':        gpu_index,
-            'sampled_index':    sampled_index,
-            'in_channels':      in_channels,
-            'out_channels':     out_channels
-        }
-
-        if config_file:
-            with open(config_file) as json_file:
-                params = json.load(json_file)
+        with open(config_file) as json_file:
+            params = json.load(json_file)
         
         cmd = SamplePair(params=params)
         cmd.execute()
