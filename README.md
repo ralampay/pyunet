@@ -28,12 +28,6 @@ For `pip` users use:
 pip install -r requirements.txt
 ```
 
-Install `pytorch` manually (since currently it's not in the `pip` repositories:
-
-```
-pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-```
-
 2. Activate the environment
 
 For `venv` users:
@@ -50,7 +44,10 @@ Values passed in the `--mode [mode]` flag
 
 * `unet`: UNet (original UNet) [https://arxiv.org/abs/1505.04597](https://arxiv.org/abs/1505.04597)
 * `unet_attn`: Attention UNet [https://arxiv.org/abs/1804.03999](https://arxiv.org/abs/1804.03999)
-* `unet_rd`: UNet RD (using self-attention)
+* `unet_attn_dp`: Attention UNet using Depthwise Seperable Convolutions
+* `unet_attn_ghost`: Attention UNet using Ghost Convolutions
+* `unet_attn_inverted_residual_block`: Attention UNet using Inverted Residual Blocks
+* `unet_attn_stacked_ghost_irb`: Attenion UNet using combination of Ghost and Inverted Residual Blocks
 
 Loss type (loss function) can be defined as follows:
 
@@ -58,6 +55,7 @@ Loss type (loss function) can be defined as follows:
 * `DL`: Dice Loss
 * `TL`: Tversky Loss
 * `FL`: Focal Loss
+* `DP`: Depth Loss
 
 Sample training script:
 
@@ -81,31 +79,62 @@ python -m pyunet \
   --cont $CONT
 ```
 
+This mode also supports passing a config file via option `--config-file` for training parameters. Sample training file:
+
+```
+{
+  "img_width": 128,
+  "img_height": 128,
+  "batch_size": 2,
+  "epochs": 100,
+  "learning_rate": 0.0001,
+  "in_channels": 3,
+  "out_channels": 2,
+  "loss_type": "CE",
+  "model_type": "unet",
+  "device": "cuda",
+  "gpu_index": 0,
+  "cont": false,
+  "input_img_dir": "tmp/train/images",
+  "input_mask_dir": "tmp/train/masks",
+  "model_file": "tmp/unet.pth"
+}
+```
+
 ### Sample Pair `sample-pair`
 
 Displays the result of a given model by showing the original, mask and prediction of a an image. 
 
-Important flags:
+**This mode only accepts `config-file` as an option since it's possible to use multiple models at the same time.***
 
-* `input-img-dir`: Location of images to sample from
-* `input-mask-dir`: Mask (tiff) versions of the image
-* `sampled-index`: The index of an image to sample (random if not set)
-* `model-file`: The model file to be produced or continue training from (if `cont` is set to `True`)
-* `out-channels`: Number of expected labels. This includes `0` so binary would mean `--out-channels 2`
-
-Sample invocation:
+Sample structure of config file:
 
 ```
-python -m pyunet \
-  --mode sample-pair \
-  --img-width $IMG_WIDTH \
-  --img-height $IMG_HEIGHT \
-  --input-img-dir $INPUT_IMG_DIR \
-  --input-mask-dir $MASKED_IMG_DIR \
-  --model-file $MODEL_FILE \
-  --device $DEVICE \
-  --model-type $MODEL_TYPE \
-  --sampled-index $SAMPLED_INDEX
+{
+  "img_width": 128,
+  "img_height": 128,
+  "input_img_dir": "tmp/train/images",
+  "input_mask_dir": "tmp/train/masks",
+  "device": "cuda",
+  "gpu_index": 0,
+  "sampled_index": -1,
+  "in_channels": 3,
+  "out_channels": 2,
+  "models": [
+    {
+      "type": "unet",
+      "file": "tmp/unet.pth"
+    },
+    {
+      "type": "unet_attn",
+      "file": "tmp/unet_attn.pth"
+    },
+    {
+      "type": "unet_attn_ghost",
+      "file": "tmp/unet_attn_ghost.pth"
+    }
+  ]
+}
 ```
 
 ### Benchmarka Model `benchmark`
