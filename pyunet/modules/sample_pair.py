@@ -95,10 +95,6 @@ class SamplePair:
                 state['state_dict']
             )
 
-            # Load image
-            rows, cols, _ = img_for_plot.shape
-            original_dim = (cols, rows)
-
             input_image = cv2.resize(img_for_plot, dim) / 255
             input_image = input_image.transpose((2, 0, 1))
 
