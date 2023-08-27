@@ -14,7 +14,7 @@ from sklearn.metrics import recall_score
 import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.utils import get_image, get_mask, get_predicted_img, dice_score, count_parameters, initialize_model
+from lib.utils import get_image, get_mask, get_predicted_img, dice_score, count_parameters, initialize_model, load_model_for_inference
 
 class Benchmark:
     def __init__(self, params={}):
@@ -43,22 +43,18 @@ class Benchmark:
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
             self.device = "cuda:{}".format(self.gpu_index)
 
-        self.model = initialize_model(
-            self.in_channels,
-            self.out_channels,
-            self.model_type,
-            self.device
-        )
-
         state = torch.load(
             self.model_file,
             map_location=self.device
         )
 
-        self.model.load_state_dict(state['state_dict'])
-        self.model.optimizer = state['optimizer']
-
-        self.model.eval()
+        self.model = load_model_for_inference(
+            self.in_channels,
+            self.out_channels,
+            self.model_type,
+            self.device,
+            state['state_dict']
+        )
 
         test_images = sorted(glob.glob("{}/*".format(self.input_img_dir)))
         test_masks  = sorted(glob.glob("{}/*".format(self.input_mask_dir)))

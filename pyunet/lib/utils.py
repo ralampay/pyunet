@@ -37,6 +37,8 @@ def load_model_for_inference(in_channels, out_channels, model_type, device, stat
 
     model.load_state_dict(state_dict)
 
+    model.eval()
+
     return model
 
 def initialize_model(in_channels, out_channels, model_type, device):
