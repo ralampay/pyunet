@@ -33,8 +33,7 @@ class GenerateDataset:
         train_images, test_images, train_masks, test_masks = train_test_split(
             images,
             masks,
-            test_size=0.3,
-            random_state=42
+            test_size=0.3
         )
 
         for img_file in train_images:
