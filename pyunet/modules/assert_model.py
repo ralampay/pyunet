@@ -42,11 +42,11 @@ class AssertModel:
 
         result = self.model(tensors)
 
-        print(result.shape)
+        print(f"Result Shape: {result.shape}")
 
         result_argmax = torch.argmax(result, 1)
-        print(result_argmax)
-        print(result_argmax.shape)
+
+        print(f"Result Argmax Shape: {result_argmax.shape}")
 
         num_parameters = count_parameters(self.model)
 

@@ -36,7 +36,8 @@ mode_choices = [
     "sample-frame",
     "extract-unique-gray",
     "assert-model",
-    "rgb2mask"
+    "rgb2mask",
+    "train-depth"
 ]
 
 model_type_choices = [
