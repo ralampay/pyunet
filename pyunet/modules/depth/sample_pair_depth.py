@@ -73,7 +73,7 @@ class SamplePairDepth:
         plt.imshow(img_for_plot)
         plt.title('Image')
         plt.subplot(int(f"1{num_cols}2"))
-        plt.imshow(mask_for_plot, cmap='gray')
+        plt.imshow(mask_for_plot)
         plt.title('Mask')
 
         if self.device == 'cuda':
