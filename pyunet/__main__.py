@@ -14,6 +14,7 @@ from modules.monitor_onnx import MonitorOnnx
 from modules.export_onnx import ExportOnnx
 from modules.generate_tiff import GenerateTiff
 from modules.sample_pair import SamplePair
+from modules.depth.sample_pair_depth import SamplePairDepth
 from modules.generate_dataset import GenerateDataset
 from modules.sample_frame import SampleFrame
 from modules.extract_unique_gray import ExtractUniqueGray
@@ -21,16 +22,21 @@ from modules.benchmark import Benchmark
 from modules.assert_model import AssertModel
 from modules.rgb2mask import Rgb2Mask
 
+# Depth
+from modules.depth.train_depth import TrainDepth
+
 from lib.helpers.extract_params_from_config import ExtractParamsFromConfig
 
 mode_choices = [
     "train",
+    "train-depth",
     "forward",
     "generate-tiff",
     "monitor",
     "monitor-onnx",
     "export-onnx",
     "sample-pair",
+    "sample-pair-depth",
     "benchmark",
     "generate-dataset",
     "sample-frame",
@@ -46,7 +52,8 @@ model_type_choices = [
     "unet_attn_dp",
     "unet_attn_ghost",
     "unet_attn_inverted_residual_block",
-    "unet_attn_stacked_ghost_irb"
+    "unet_attn_stacked_ghost_irb",
+    "unet_depth"
 ]
 
 default_dataset_name = (datetime.datetime.now()).strftime("%Y%m%d%H%M%S")
@@ -144,6 +151,31 @@ def main():
         cmd = Train(params=params)
         cmd.execute()
 
+    elif mode == "train-depth":
+        params = {
+            'img_width':        img_width,
+            'img_height':       img_height,
+            'device':           device,
+            'gpu_index':        gpu_index,
+            'input_img_dir':    input_img_dir,
+            'input_mask_dir':   input_mask_dir,
+            'epochs':           epochs,
+            'learning_rate':    learning_rate,
+            'model_file':       model_file,
+            'batch_size':       batch_size,
+            'in_channels':      in_channels,
+            'out_channels':     out_channels,
+            'cont':             cont,
+            'model_type':       model_type
+        }
+
+        if config_file:
+            with open(config_file) as json_file:
+                params = json.load(json_file)
+
+        cmd = TrainDepth(params=params)
+        cmd.execute()
+
     elif mode =="forward":
         params = {
             'model_file':   model_file,
@@ -200,6 +232,13 @@ def main():
             params = json.load(json_file)
         
         cmd = SamplePair(params=params)
+        cmd.execute()
+
+    elif mode == "sample-pair-depth":
+        with open(config_file) as json_file:
+            params = json.load(json_file)
+        
+        cmd = SamplePairDepth(params=params)
         cmd.execute()
 
     elif mode == "generate-tiff":

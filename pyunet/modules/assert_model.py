@@ -44,10 +44,6 @@ class AssertModel:
 
         print(f"Result Shape: {result.shape}")
 
-        result_argmax = torch.argmax(result, 1)
-
-        print(f"Result Argmax Shape: {result_argmax.shape}")
-
         num_parameters = count_parameters(self.model)
 
         print(f"Number of parameters: {num_parameters}")
