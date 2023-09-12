@@ -20,6 +20,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score, initialize_model
+from lib.depth.depth_loss import depth_loss
 
 class TrainDepth:
     def __init__(self, params={}, seed=0):
@@ -172,7 +173,8 @@ class TrainDepth:
             #print("targets")
             #print(targets)
 
-            loss = loss_fn(predictions, targets)
+            #loss = loss_fn(predictions, targets)
+            loss = depth_loss(predictions, targets)
 
             # Backward
             optimizer.zero_grad()

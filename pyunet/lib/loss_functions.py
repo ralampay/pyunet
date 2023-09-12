@@ -2,21 +2,6 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-def depth_loss(predictions, depthmap, weight=0.1):
-    # Compute pointwise loss
-    #loss_pointwise = nn.CrossEntropyLoss(reduction='none')(predictions, depthmap).mean()
-    mapped = nn.LogSoftmax(dim=1)(predictions)
-    loss_pointwise = nn.NLLLoss()(mapped, depthmap)
-
-    # Compute l1 loss gradients over image gradient
-    loss_gradients = 0.
-
-    # Compute structural loss
-    loss_ssm = 0.
-    #loss_ssm = (1 - loss_pointwise) / 2
-
-    return (weight * loss_pointwise) + loss_gradients + loss_ssm
-
 # Source: https://github.com/gokulprasadthekkel/pytorch-multi-class-focal-loss/blob/master/focal_loss.py
 class FocalLoss(nn.modules.loss._WeightedLoss):
     def __init__(self, weight=None, gamma=2,reduction='mean'):

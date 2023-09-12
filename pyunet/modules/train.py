@@ -19,7 +19,7 @@ from sklearn.metrics import recall_score
 from torch.utils.tensorboard import SummaryWriter
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from lib.loss_functions import depth_loss, dice_loss, tversky_loss, FocalLoss, sym_unified_focal_loss
+from lib.loss_functions import dice_loss, tversky_loss, FocalLoss, sym_unified_focal_loss
 from lib.utils import get_image, get_mask, get_predicted_img, dice_score, initialize_model
 
 class Train:

@@ -1,0 +1,15 @@
+source env/bin/activate
+
+python -m pyunet --mode train --config-file tmp/normal/train/unet.json
+python -m pyunet --mode train --config-file tmp/normal/train/unet_attn.json
+python -m pyunet --mode train --config-file tmp/normal/train/unet_attn_dp.json
+python -m pyunet --mode train --config-file tmp/normal/train/unet_attn_ghost.json
+python -m pyunet --mode train --config-file tmp/normal/train/unet_attn_inverted_residual_block.json
+python -m pyunet --mode train --config-file tmp/normal/train/unet_attn_stacked_ghost_irb.json
+
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet.json
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet_attn.json
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet_attn_dp.json
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet_attn_ghost.json
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet_attn_inverted_residual_block.json
+python -m pyunet --mode train --config-file tmp/serrated-adenoma/train/unet_attn_stacked_ghost_irb.json
