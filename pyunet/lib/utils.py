@@ -13,6 +13,8 @@ from lib.unet_attn_ghost import UNetAttnGhost
 from lib.unet_attn_inverted_residual_block import UNetAttnInvertedResidualBlock
 from lib.unet_attn_stacked_ghost_irb import UNetAttnStackedGhostIrb
 from lib.depth.unet_depth import UNetDepth
+from lib.depth.unet_attn_depth import UNetAttnDepth
+from lib.depth.unet_attn_dp_depth import UNetAttnDpDepth
 
 def rgb2mask(colors, image):
     rows, cols, _ = image.shape
@@ -76,12 +78,24 @@ def initialize_model(in_channels, out_channels, model_type, device):
             in_channels=in_channels,
             out_channels=out_channels
         )
+
     # Depth Models
     elif model_type == 'unet_depth':
         model = UNetDepth(
             in_channels=in_channels,
             out_channels=out_channels
         )
+    elif model_type == 'unet_attn_depth':
+        model = UNetAttnDepth(
+            in_channels=in_channels,
+            out_channels=out_channels
+        )
+    elif model_type == 'unet_attn_dp_depth':
+        model = UNetAttnDpDepth(
+            in_channels=in_channels,
+            out_channels=out_channels
+        )
+
     else:
         raise ValueError(f'Unsupported model_type {model_type}')
 
