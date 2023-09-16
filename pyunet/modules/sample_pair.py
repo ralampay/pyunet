@@ -66,15 +66,28 @@ class SamplePair:
         mask_for_plot   = cv2.resize(mask_for_plot, dim)
 
         num_models  = len(self.models)
-        num_cols    = num_models + 3
+        num_cols    = num_models + 2
+        num_rows    = 1
 
-        plt.figure(figsize=(18, 4))
-        plt.subplot(int(f"1{num_cols}1"))
-        plt.imshow(img_for_plot)
-        plt.title('Image')
-        plt.subplot(int(f"1{num_cols}2"))
-        plt.imshow(mask_for_plot, cmap='gray')
-        plt.title('Mask')
+        subplot_width   = 3
+        subplot_height  = 4
+
+        # Create a figure and grid of subplots
+        fig, axes = plt.subplots(
+            num_rows, 
+            num_cols, 
+            figsize=(subplot_width * num_cols, subplot_height)
+        )
+
+        # Original Image
+        axes[0].imshow(img_for_plot)
+        axes[0].set_title('Image')
+        axes[0].axis('off')
+
+        # Masked Image
+        axes[1].imshow(mask_for_plot)
+        axes[1].set_title('Mask')
+        axes[1].axis('off')
 
         if self.device == 'cuda':
             print("CUDA Device: {}".format(torch.cuda.get_device_name(self.gpu_index)))
@@ -104,8 +117,12 @@ class SamplePair:
             result = torch.argmax(result, 1).detach().cpu().numpy().astype(np.float32)
             result = result.transpose((1, 2, 0)) / self.out_channels
 
-            plt.subplot(int(f"1{num_cols}{model_i + 3}"))
-            plt.title(model_type)
-            plt.imshow(result)
+            curr_index = model_i + 2
+            axes[curr_index].imshow(result)
+            axes[curr_index].set_title(model_type)
+            axes[curr_index].axis('off')
+
+        # Adjust the spacing between subplots
+        plt.subplots_adjust(wspace=0.2)
 
         plt.show()
