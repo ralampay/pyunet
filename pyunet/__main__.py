@@ -3,7 +3,6 @@ import argparse
 import os
 import datetime
 import os.path
-import sys
 import json
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
