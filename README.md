@@ -189,3 +189,7 @@ python -m pyunet --mode rgb2mask --config-file samples/bhuvan_satellite_dataset.
 ## Semantic Segmentation Datasets
 
 * [Bhuvan Satellite Image Dataset](https://www.kaggle.com/datasets/khushiipatni/satellite-image-and-mask)
+
+## Google Colab Notebooks
+
+* [Train](https://colab.research.google.com/drive/19t9eVCg_YViUHEYw_BRs4pzq8rVQoME5#scrollTo=vVMxfwktc4Rw)
