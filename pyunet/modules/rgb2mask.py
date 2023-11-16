@@ -6,7 +6,7 @@ import time
 import numpy as np
 import json
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
