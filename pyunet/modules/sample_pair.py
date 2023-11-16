@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import random
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from utils import load_model_for_inference
 
